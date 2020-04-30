@@ -6,6 +6,10 @@
 
 
 class Application {
-
+public:
+    Application() = default;
+    int run();
+private:
+    Interface m_Interface;
 };
 
