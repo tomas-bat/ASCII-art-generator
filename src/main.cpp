@@ -1,5 +1,8 @@
 #include "Application.hpp"
+#include <iostream>
 
 int main() {
-    return 0;
+    return Application(
+               Interface(std::cin, std::cout)
+           ).run();
 }

@@ -4,10 +4,14 @@
  */
 #pragma once
 
+#include "Interface.hpp"
+
 
 class Application {
 public:
-    Application() = default;
+    explicit Application(Interface interface) : m_Interface(interface) {}
+    Application(const Application&) = delete;
+    Application& operator= (const Application&) = delete;
     int run();
 private:
     Interface m_Interface;
