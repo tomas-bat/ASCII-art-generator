@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Interface.hpp"
+#include "StartController.hpp"
 
 
 class Application {
@@ -12,7 +13,7 @@ public:
     explicit Application(Interface interface) : m_Interface(interface) {}
     Application(const Application&) = delete;
     Application& operator= (const Application&) = delete;
-    int run();
+    int run() { return StartController(m_Interface).run(); }
 private:
     Interface m_Interface;
 };

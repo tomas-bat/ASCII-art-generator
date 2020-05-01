@@ -16,26 +16,20 @@ Command quit_app() {
     };
 }
 
-Command help(map<string, Command>& commands) {
+Command go_to_converter(const Interface& interface) {
     return Command{
-        "Displays this help.",
-        [&commands] (const Interface& interface) {
-            for (const auto& cmd : commands)
-                interface.print_help(cmd.first, cmd.second.help());
+        "Opens the ASCII-art generator.",
+        [&interface] (const Interface&) {
+            ConverterController(interface).run();
             return 1;
         }
     };
 }
 
-Command go_to_converter(const Interface& interface) {
-    return Command{
-        "Opens the ASCII-art generator.",
-        [&interface] (const Interface&) { return ConverterController(interface).run(); }
-    };
-}
-
 StartController::StartController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("quit", quit_app());
-    m_Commands.emplace("help", help(m_Commands));
     m_Commands.emplace("converter", go_to_converter(interface));
+
+    m_Interface.print("[ You're in the main menu. ]\n");
+    m_Commands["help"].execute(m_Interface);
 }

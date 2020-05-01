@@ -20,7 +20,7 @@ string Interface::get_command() {
 }
 
 void Interface::print_help(const string& cmd_name, const std::string& cmd_help) const {
-    if (!(m_Out << cmd_help))
+    if (!(m_Out << cmd_name << ": " << cmd_help << endl))
         throw runtime_error("Unable to print output.");
 }
 

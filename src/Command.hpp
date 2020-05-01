@@ -10,6 +10,7 @@
 
 class Command {
 public:
+    Command() = default;
     Command(std::string help, std::function<int (const Interface&)> func) : m_Help(std::move(help)), m_Function(std::move(func)) {}
     const std::string& help() const { return m_Help; };
     bool execute(const Interface& interface) { return m_Function(interface); }

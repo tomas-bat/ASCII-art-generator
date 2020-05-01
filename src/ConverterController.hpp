@@ -8,6 +8,6 @@
 
 class ConverterController : public Controller {
 public:
-    explicit ConverterController(const Interface& interface) : Controller(interface) {}
+    explicit ConverterController(const Interface& interface);
 };
 
