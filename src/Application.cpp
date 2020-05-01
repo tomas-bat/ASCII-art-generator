@@ -7,6 +7,7 @@
 using namespace std;
 
 int Application::run() {
+    string command = m_Interface.get_command();
     // todo
     return 0;
 }
