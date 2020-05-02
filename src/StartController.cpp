@@ -3,7 +3,6 @@
  * @date 01/05/2020
  */
 
-#include <map>
 #include "StartController.hpp"
 #include "ConverterController.hpp"
 
