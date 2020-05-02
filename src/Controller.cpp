@@ -9,9 +9,15 @@
 using namespace std;
 
 int Controller::run() {
+    // Show help at the begginging:
+    m_Interface.print(m_Welcome);
+    m_Commands["help"].execute(m_Interface);
+
     while (true) {
+        // Get the command from the interface:
         string command = m_Interface.get_command();
         auto it = m_Commands.find(command);
+
         if (it == m_Commands.end())
             m_Interface.print("Unknown command. Use \"help\" for help.\n");
         else {

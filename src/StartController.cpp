@@ -15,11 +15,15 @@ Command quit_app() {
     };
 }
 
-Command go_to_converter(const Interface& interface) {
+Command go_to_converter(const Interface& interface, const string& welcome, const Command& help) {
     return Command{
         "Opens the ASCII-art generator.",
-        [&interface] (const Interface&) {
+        [&interface, &welcome, &help] (const Interface&) {
             ConverterController(interface).run();
+
+            // After going back, show welcome and help again:
+            interface.print(welcome);
+            help.execute(interface);
             return 1;
         }
     };
@@ -27,8 +31,7 @@ Command go_to_converter(const Interface& interface) {
 
 StartController::StartController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("quit", quit_app());
-    m_Commands.emplace("converter", go_to_converter(interface));
+    m_Commands.emplace("converter", go_to_converter(m_Interface, m_Welcome, m_Commands["help"]));
 
-    m_Interface.print("[ You're in the main menu. ]\n");
-    m_Commands["help"].execute(m_Interface);
+    m_Welcome = "[ You're in the main menu: ]\n";
 }
