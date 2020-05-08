@@ -77,5 +77,5 @@ ConverterController::ConverterController(const Interface& interface) : Controlle
     m_Commands.emplace("howto", how_to(m_Interface));
     m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images));
 
-    m_Welcome = "[ You're in the converter ]\n";
+    m_Welcome = "[ You're in the converter: ]\n";
 }

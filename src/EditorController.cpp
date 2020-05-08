@@ -20,5 +20,5 @@ Command back_editor() {
 EditorController::EditorController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_editor());
 
-    m_Welcome = "[ You're in the editor ]\n";
+    m_Welcome = "[ You're in the editor: ]\n";
 }

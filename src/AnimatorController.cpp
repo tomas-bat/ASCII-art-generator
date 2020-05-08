@@ -19,5 +19,5 @@ Command back_animator() {
 AnimatorController::AnimatorController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_animator());
 
-    m_Welcome = "[ You're in the animator ]\n";
+    m_Welcome = "[ You're in the animator: ]\n";
 }
