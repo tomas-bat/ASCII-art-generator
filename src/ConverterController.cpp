@@ -31,10 +31,13 @@ Command folder(const Interface& interface) {
         "Specify the folder with images.",
         [&interface] (const Interface&) {
             //todo: set folder location to m_Location, test file types and print the number of valid images
+            interface.print("--not implemented--\n");
             return 1;
         }
     };
 }
+
+// todo: commands
 
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());

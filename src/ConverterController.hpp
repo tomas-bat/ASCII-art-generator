@@ -30,7 +30,7 @@ public:
     ConverterController& operator= (const ConverterController&) = delete;
 
 private:
-    std::string m_Folder_location;
-    int m_Valid_images = 0;
+    __unused std::string m_Folder_location; // using __unused to silence warnings, variable will be used later
+    __unused int m_Valid_images = 0; // using __unused to silence warnings, variable will be used later
 };
 
