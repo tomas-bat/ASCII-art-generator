@@ -14,6 +14,10 @@ int Controller::run() {
     m_Commands["help"].execute(m_Interface);
 
     while (true) {
+        // If EOF is reached at input, end the program:
+        if (m_Interface.eof())
+            return 0;
+
         // Get the command from the interface:
         string command = m_Interface.get_command();
         auto it = m_Commands.find(command);

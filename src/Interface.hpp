@@ -38,6 +38,20 @@ public:
     std::string get_command();
 
     /**
+     * This method tries to read a path from the input stream.
+     *
+     * @return The command given in by a user.
+     */
+    std::string get_path();
+
+    /**
+     * A getter for m_In end of file status.
+     *
+     * @return True if EOF, otherwise false.
+     */
+    bool eof() const { return m_In.eof(); }
+
+    /**
      * This method prints a help for a command into the output.
      *
      * @param cmd_name[in]  Name of the command.
@@ -46,11 +60,18 @@ public:
     void print_help(const std::string& cmd_name, const std::string& cmd_help) const;
 
     /**
+     * Puts end of line to m_Out.
+     *
+     * @return This interface.
+     */
+    Interface& end_line();
+
+    /**
      * This method prints any given string into the output.
      *
      * @param str[in]   The string we want to print out.
      */
-    void print(const std::string& str) const;
+    Interface& print(const std::string& str);
 
 private:
     std::istream& m_In;

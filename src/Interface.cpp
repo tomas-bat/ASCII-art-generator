@@ -11,10 +11,6 @@ string Interface::get_command() {
     string command;
     if (!(m_Out << "Enter command:" << endl))
         throw runtime_error("Unable to print output.");
-    if (m_In.eof()) {
-        clear_line();
-        return command;
-    }
     if (!(m_In >> command)) {
         if (!(m_Out << "Wrong input."))
             throw runtime_error("Unable to print output.");
@@ -24,17 +20,38 @@ string Interface::get_command() {
     return command;
 }
 
+std::string Interface::get_path() {
+    string path, out_path;
+    if (!(m_Out << "Enter path to folder: /"))
+        throw runtime_error("Unable to print output.");
+    out_path += "/";
+    if (!(m_In >> path)) {
+        if (!(m_Out << "Wrong input."))
+            throw runtime_error("Unable to print output.");
+        else
+            return string();
+    }
+    out_path += path;
+    return out_path;
+}
+
 void Interface::print_help(const string& cmd_name, const std::string& cmd_help) const {
     if (!(m_Out << cmd_name << ": " << cmd_help << endl))
         throw runtime_error("Unable to print output.");
 }
 
-void Interface::print(const string& str) const {
+Interface& Interface::print(const string& str) {
     if (!(m_Out << str))
         throw runtime_error("Unable to print output.");
+    return *this;
 }
 
 void Interface::clear_line() const {
     m_In.clear();
     m_In.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+Interface& Interface::end_line() {
+    m_Out << endl;
+    return *this;
 }

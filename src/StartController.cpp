@@ -17,7 +17,7 @@ Command quit_app() {
     };
 }
 
-Command go_to_converter(const Interface& interface, const string& welcome, const Command& help) {
+Command go_to_converter(Interface& interface, const string& welcome, const Command& help) {
     return Command{
         "Opens the ASCII-art generator.",
         [&interface, &welcome, &help] (const Interface&) {
@@ -31,7 +31,7 @@ Command go_to_converter(const Interface& interface, const string& welcome, const
     };
 }
 
-Command go_to_animator(const Interface& interface, const string& welcome, const Command& help) {
+Command go_to_animator(Interface& interface, const string& welcome, const Command& help) {
     return Command{
         "Opens the ASCII-art image animator.",
         [&interface, &welcome, &help] (const Interface&) {
@@ -45,7 +45,7 @@ Command go_to_animator(const Interface& interface, const string& welcome, const 
     };
 }
 
-Command go_to_editor(const Interface& interface, const string& welcome, const Command& help) {
+Command go_to_editor(Interface& interface, const string& welcome, const Command& help) {
     return Command{
             "Opens the ASCII-art image editor.",
             [&interface, &welcome, &help] (const Interface&) {
