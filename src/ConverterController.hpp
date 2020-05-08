@@ -28,5 +28,9 @@ public:
     * Operator= is deleted to forbid more than one instance.
     */
     ConverterController& operator= (const ConverterController&) = delete;
+
+private:
+    std::string m_Folder_location;
+    int m_Valid_images = 0;
 };
 

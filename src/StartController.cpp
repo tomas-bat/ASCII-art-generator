@@ -5,6 +5,8 @@
 
 #include "StartController.hpp"
 #include "ConverterController.hpp"
+#include "AnimatorController.hpp"
+#include "EditorController.hpp"
 
 using namespace std;
 
@@ -29,9 +31,40 @@ Command go_to_converter(const Interface& interface, const string& welcome, const
     };
 }
 
+Command go_to_animator(const Interface& interface, const string& welcome, const Command& help) {
+    return Command{
+        "Opens the ASCII-art image animator.",
+        [&interface, &welcome, &help] (const Interface&) {
+            AnimatorController(interface).run();
+
+            // After going back, show welcome and help again:
+            interface.print(welcome);
+            help.execute(interface);
+            return 1;
+        }
+    };
+}
+
+Command go_to_editor(const Interface& interface, const string& welcome, const Command& help) {
+    return Command{
+            "Opens the ASCII-art image editor.",
+            [&interface, &welcome, &help] (const Interface&) {
+                EditorController(interface).run();
+
+                // After going back, show welcome and help again:
+                interface.print(welcome);
+                help.execute(interface);
+                return 1;
+            }
+    };
+}
+
+
 StartController::StartController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("quit", quit_app());
     m_Commands.emplace("converter", go_to_converter(m_Interface, m_Welcome, m_Commands["help"]));
+    m_Commands.emplace("animator", go_to_animator(m_Interface, m_Welcome, m_Commands["help"]));
+    m_Commands.emplace("editor", go_to_editor(m_Interface, m_Welcome, m_Commands["help"]));
 
     m_Welcome = "[ You're in the main menu: ]\n";
 }

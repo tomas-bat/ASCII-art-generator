@@ -26,6 +26,11 @@ public:
     Interface(std::istream& in, std::ostream& out) : m_In(in), m_Out(out) {}
 
     /**
+     * This method clears the line in the input stream in order to avoid infinite looping if EOF is found.
+     */
+    void clear_line() const;
+
+    /**
      * This method tries to read a command from the input stream.
      *
      * @return  The command given in by a user.
