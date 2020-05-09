@@ -5,6 +5,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include "ImageASCII.hpp"
 
 /**
@@ -30,10 +31,18 @@ public:
      * @param folder_location   Location of the folder, where the converted image will be saved.
      * @return                  The new image in ASCII-art (empty if the conversion fails).
      */
-    virtual ImageASCII convert(const std::string& folder_location) = 0;
+    virtual ImageASCII convert() const = 0;
+
+    /**
+     * A getter for the image filename.
+     *
+     * @return The image filename.
+     */
+    std::string get_name() const { return m_Name; }
 
     // todo
 private:
+    std::string m_Name;
     // todo
 };
 

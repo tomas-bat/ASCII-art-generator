@@ -4,9 +4,10 @@
  */
 
 #include <filesystem>
+#include <fstream>
 #include "ConverterController.hpp"
-namespace fs = std::__fs::filesystem;
 
+namespace fs = std::__fs::filesystem;
 using namespace std;
 
 Command back_converter() {
@@ -29,7 +30,7 @@ Command how_to(Interface& interface) {
     };
 }
 
-Command folder(Interface& interface, string& folder_location, int& valid_files) {
+Command folder(Interface& interface, string& folder_location, vector<string>& valid_files) {
     return Command{
         "Specify the folder with images.",
         [&interface, &folder_location, &valid_files] (const Interface&) {
@@ -40,12 +41,13 @@ Command folder(Interface& interface, string& folder_location, int& valid_files) 
                 fs::current_path(path);
             }
             catch (const fs::filesystem_error& except) {
-                interface.print("No such file or directory.\n");
+                interface.print(except.what())
+                         .end_line();
                 return 2;
             }
             folder_location = path;
 
-            valid_files = 0;
+            valid_files.clear();
 
             // Find supported formats:
             for (const auto& file : fs::directory_iterator(path)) {
@@ -58,12 +60,59 @@ Command folder(Interface& interface, string& folder_location, int& valid_files) 
                     interface.print("Found: ")
                              .print(file.path().filename())
                              .end_line();
-                    valid_files++;
+                    valid_files.push_back(file.path());
                 }
             }
             interface.print("Found ")
-                     .print(to_string(valid_files))
+                     .print(to_string(valid_files.size()))
                      .print(" file(s) in total.")
+                     .end_line();
+            return 1;
+        }
+    };
+}
+
+Command convert(Interface& interface, const string& folder_location, const vector<string>& valid_images,
+                const vector<unique_ptr<Image>>& images) {
+    return Command{
+        "Converts all images from the given folder into ASCII-art.",
+        [&interface, &folder_location, &valid_images, &images] (const Interface&) {
+            if (folder_location.empty()) {
+                interface.print("You have to specify the folder first.")
+                         .end_line();
+                return 2;
+            }
+            if (valid_images.empty()) {
+                interface.print("No valid images have been found.")
+                         .end_line();
+                return 2;
+            }
+
+            // Load images from folder to m_Images:
+            // todo
+
+            // Convert all images to ASCII-art and save them:
+            for (const auto& image : images) {
+                // Convert the image to a local variable:
+                ImageASCII ascii_image = image->convert();
+
+                // Get the path where the new image will be saved to:
+                string save_path = folder_location + "/converted/" + image->get_name() + ".txt";
+
+                // Create the output file:
+                ofstream out_file(save_path, ios::binary);
+                if (!out_file)
+                    throw runtime_error("File cannot be written.");
+
+                // Save the ASCII-art image to the output file:
+                for (size_t i = 0; i < ascii_image.get_height(); i++) {
+                    if (!(out_file << ascii_image.get_row(i)))
+                        throw runtime_error("Unexpected error when writing output.");
+                }
+            }
+
+            // todo
+            interface.print("--not implemeted--")
                      .end_line();
             return 1;
         }
@@ -76,6 +125,7 @@ ConverterController::ConverterController(const Interface& interface) : Controlle
     m_Commands.emplace("back", back_converter());
     m_Commands.emplace("howto", how_to(m_Interface));
     m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images));
+    m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images));
 
     m_Welcome = "[ You're in the converter: ]\n";
 }

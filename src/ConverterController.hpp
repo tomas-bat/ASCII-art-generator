@@ -4,7 +4,9 @@
  */
 #pragma once
 
+#include <vector>
 #include "Controller.hpp"
+#include "Image.hpp"
 
 /**
  * Class to represent a controller that controls the ASCII-art converter.
@@ -30,7 +32,8 @@ public:
     ConverterController& operator= (const ConverterController&) = delete;
 
 private:
-    __unused std::string m_Folder_location; // using __unused to silence warnings, variable will be used later
-    __unused int m_Valid_images = 0; // using __unused to silence warnings, variable will be used later
+    std::vector<std::unique_ptr<Image>> m_Images;
+    std::vector<std::string> m_Valid_images;
+    std::string m_Folder_location;
 };
 
