@@ -71,6 +71,10 @@ V podprogramu pro jednoduchou editaci ASCII-art obrázků:
 - `back` se vrátí zpět do menu programu
 
 ### Kde mám polymorfismus?
-Polymorfismus využívám u různých formátů obrázků. Mám virtuální třídu `Image`, ze které
-dědí `ImageJPG`, `ImagePNG`, které se každé konvertují trochu jinak. Program má
-jen skupinu obrázků typu `Image` a na nich volá konverzi. 
+Polymorfismus využívám u různých formátů obrázků. Mám abstraktní třídu `Image`, ze které
+dědí `ImageJPG` a `ImagePNG`, které se každé konvertují trochu jinak. Program má
+jen skupinu obrázků typu `Image` a na nich volá konverzi.
+
+Polymorfní volání je zatím v třídě `ConverterController`, která obsahuje
+vector načtených obrázků jako unique pointery. Command `convert` při konverzi
+neřeší, jakého je obrázek typu.
