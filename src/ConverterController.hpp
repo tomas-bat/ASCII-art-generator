@@ -31,6 +31,12 @@ public:
     */
     ConverterController& operator= (const ConverterController&) = delete;
 
+    /**
+     * Function to load all images into m_Images.
+     */
+    friend void load_images(std::vector<std::unique_ptr<Image>>& images, std::vector<std::string>& valid_images,
+                            Interface& interface);
+
 private:
     std::vector<std::unique_ptr<Image>> m_Images;
     std::vector<std::string> m_Valid_images;

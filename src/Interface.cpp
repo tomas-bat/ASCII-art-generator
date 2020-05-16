@@ -27,7 +27,9 @@ std::string Interface::get_path() {
     if (!(m_Out << "Enter path to folder: /"))
         throw runtime_error("Unable to print output.");
     out_path += "/";
-    if (!(m_In >> path)) {
+    getline(m_In, path);
+    getline(m_In, path);
+    if (m_In.fail()) {
         if (m_In.eof())
             return string();
         if (!(m_Out << "Wrong input."))

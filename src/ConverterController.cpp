@@ -5,6 +5,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <png.h>
+#include <jpeglib.h>
 #include "ConverterController.hpp"
 
 namespace fs = std::__fs::filesystem;
@@ -30,11 +32,21 @@ Command how_to(Interface& interface) {
     };
 }
 
-Command folder(Interface& interface, string& folder_location, vector<string>& valid_files) {
+void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images, Interface& interface) {
+    for (const auto& name : valid_images)
+        interface.print(name)
+                 .end_line();
+
+}
+
+Command folder(Interface& interface, string& folder_location, vector<string>& valid_files,
+               vector<unique_ptr<Image>>& images) {
     return Command{
         "Specify the folder with images.",
-        [&interface, &folder_location, &valid_files] (const Interface&) {
+        [&interface, &folder_location, &valid_files, &images] (const Interface&) {
             string path = interface.get_path();
+            if (interface.eof())
+                return 0;
 
             // Check if it's a valid directory:
             try {
@@ -63,6 +75,9 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
                     valid_files.push_back(file.path());
                 }
             }
+            // Load images from folder to m_Images:
+            load_images(images, valid_files, interface);
+
             interface.print("Found ")
                      .print(to_string(valid_files.size()))
                      .print(" file(s) in total.")
@@ -124,7 +139,7 @@ Command convert(Interface& interface, const string& folder_location, const vecto
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());
     m_Commands.emplace("howto", how_to(m_Interface));
-    m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images));
+    m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images, m_Images));
     m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images));
 
     m_Welcome = "[ You're in the converter: ]\n";
