@@ -16,22 +16,25 @@ int Controller::run() {
     while (true) {
         // If EOF is reached at input, end the program:
         if (m_Interface.eof())
-            return 0;
+            return -1;
 
         // Get the command from the interface:
         string command = m_Interface.get_command();
 
         // If EOF is reached at input, end the program:
         if (m_Interface.eof())
-            return 0;
+            return -1;
 
         auto it = m_Commands.find(command);
 
         if (it == m_Commands.end())
             m_Interface.print("Unknown command. Use \"help\" for help.\n");
         else {
+            // 0 is to end the current controller
+            // -1 is to quit the app from any controller
+            // 1 is for command success
             int ret = it->second.execute(m_Interface);
-            if (ret == 0)
+            if (ret == 0 || ret == -1)
                 return 0;
         }
     }

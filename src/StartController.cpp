@@ -21,7 +21,8 @@ Command go_to_converter(Interface& interface, const string& welcome, const Comma
     return Command{
         "Opens the ASCII-art generator.",
         [&interface, &welcome, &help] (const Interface&) {
-            ConverterController(interface).run();
+            if (ConverterController(interface).run() == -1)
+                return 0;
 
             // After going back, show welcome and help again:
             interface.print(welcome);
@@ -35,7 +36,9 @@ Command go_to_animator(Interface& interface, const string& welcome, const Comman
     return Command{
         "Opens the ASCII-art image animator.",
         [&interface, &welcome, &help] (const Interface&) {
-            AnimatorController(interface).run();
+            if (AnimatorController(interface).run() == -1)
+                return 0;
+
 
             // After going back, show welcome and help again:
             interface.print(welcome);
@@ -49,7 +52,8 @@ Command go_to_editor(Interface& interface, const string& welcome, const Command&
     return Command{
             "Opens the ASCII-art image editor.",
             [&interface, &welcome, &help] (const Interface&) {
-                EditorController(interface).run();
+                if (EditorController(interface).run() == -1)
+                    return 0;
 
                 // After going back, show welcome and help again:
                 interface.print(welcome);

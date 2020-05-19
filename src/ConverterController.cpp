@@ -46,7 +46,7 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
         [&interface, &folder_location, &valid_files, &images] (const Interface&) {
             string path = interface.get_path();
             if (interface.eof())
-                return 0;
+                return -1;
 
             // Check if it's a valid directory:
             try {
