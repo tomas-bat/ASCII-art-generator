@@ -26,16 +26,40 @@ Command how_to(Interface& interface) {
             interface.print("First, you have to specify the folder in which the program will search for images "
                             "using command \"folder\", for example \"/home/users/john/imgs\".\n"
                             "After that, enter the command \"convert\" and a folder with converted images "
-                            "will be saved in the folder you have entered before.\n");
+                            "will be saved in the folder you have entered before.")
+                     .end_line();
             return 1;
         }
     };
 }
 
 void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images, Interface& interface) {
-    for (const auto& name : valid_images)
-        interface.print(name)
-                 .end_line();
+    for (const auto& img_path : valid_images) {
+        bool is_png = true, is_jpeg = true;
+
+
+
+        FILE* fp = fopen(img_path.c_str(), "rb");
+        if (!fp)
+            throw runtime_error("Unable to read image.");
+        size_t bytes_to_check = 8;
+        char header[8 * sizeof(char)];
+        fread(header, sizeof(char), bytes_to_check, fp);
+
+        // Not a PNG, check if it's a JPEG:
+        if (png_sig_cmp(reinterpret_cast<png_const_bytep>(header), 0, bytes_to_check)) {
+            is_png = false;
+
+            fclose(fp);
+            fp = fopen(img_path.c_str(), "rb");
+            if (!fp)
+                throw runtime_error("Unable to read image.");
+
+            // todo: Check if it's a JPEG
+
+        }
+
+    }
 
 }
 
