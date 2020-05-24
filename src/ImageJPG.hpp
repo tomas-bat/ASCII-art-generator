@@ -5,12 +5,21 @@
 #pragma once
 
 #include "Image.hpp"
+#include <string>
+#include <utility>
 
 /**
  * This class represents a JPG image.
  */
 class ImageJPG : public Image {
 public:
+    /**
+     * Constructor of ImageJPG.
+     *
+     * @param path  Path of the file.
+     */
+    explicit ImageJPG(const std::string& path) { m_Path = path; }
+
     /**
      * A method which is used to clone the instance of a JPG image when copying.
      *
@@ -19,11 +28,11 @@ public:
     std::unique_ptr<Image> clone() const override { return std::make_unique<ImageJPG>(*this); }
 
     /**
-     * This method converts a JPG image into an ASCII-art image.
+     * This method converts a JPG image into an universal RGB representation.
      *
-     * @return The new ASCII-art image.
+     * @return The new RGB image.
      */
-    ImageASCII convert() const override;
+    ImageRGB extract() const override;
 
     /**
      * Destructor is defaulted for now.

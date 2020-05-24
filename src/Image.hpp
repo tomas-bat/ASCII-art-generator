@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include "ImageASCII.hpp"
+#include "ImageRGB.hpp"
 
 /**
  * This abstract class represents an image of a supported file format.
@@ -26,12 +27,12 @@ public:
     virtual ~Image() = default;
 
     /**
-     * A virtual method which will be able to convert an image of a specific format into an ASCII-art image.
+     * A virtual method which will be able to convert an image of a specific format into an universal image.
      *
      * @param folder_location   Location of the folder, where the converted image will be saved.
-     * @return                  The new image in ASCII-art (empty if the conversion fails).
+     * @return                  The new image in universal RGB representation (empty if the conversion fails).
      */
-    virtual ImageASCII convert() const = 0;
+    virtual ImageRGB extract() const = 0;
 
     /**
      * A getter for the image filename.
@@ -40,9 +41,16 @@ public:
      */
     std::string get_name() const { return m_Name; }
 
+    /**
+     * A getter for the image path.
+     *
+     * @return The image path.
+     */
+    std::string get_path() const { return m_Path; }
     // todo
-private:
+protected:
     std::string m_Name;
+    std::string m_Path;
     // todo
 };
 

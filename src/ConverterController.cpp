@@ -8,6 +8,8 @@
 #include <png.h>
 #include <jpeglib.h>
 #include "ConverterController.hpp"
+#include "ImageJPG.hpp"
+#include "ImagePNG.hpp"
 
 namespace fs = std::__fs::filesystem;
 using namespace std;
@@ -33,11 +35,13 @@ Command how_to(Interface& interface) {
     };
 }
 
+bool img_is_jpeg(const string& first_line) {
+    return first_line.find("JFIF") != string::npos;
+}
+
 void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images, Interface& interface) {
     for (const auto& img_path : valid_images) {
         bool is_png = true, is_jpeg = true;
-
-
 
         FILE* fp = fopen(img_path.c_str(), "rb");
         if (!fp)
@@ -45,20 +49,32 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
         size_t bytes_to_check = 8;
         char header[8 * sizeof(char)];
         fread(header, sizeof(char), bytes_to_check, fp);
+        fclose(fp);
 
         // Not a PNG, check if it's a JPEG:
         if (png_sig_cmp(reinterpret_cast<png_const_bytep>(header), 0, bytes_to_check)) {
             is_png = false;
 
-            fclose(fp);
-            fp = fopen(img_path.c_str(), "rb");
-            if (!fp)
+            ifstream img(img_path, ios::binary);
+            if (!img)
                 throw runtime_error("Unable to read image.");
 
-            // todo: Check if it's a JPEG
+            string first_line;
+            getline(img, first_line);
+            is_jpeg = img_is_jpeg(first_line);
 
+            if (!is_jpeg) {
+                interface.print(img_path)
+                         .print(" is not a valid PNG or JPEG.")
+                         .end_line();
+                continue;
+            }
+            images.push_back(make_unique<ImageJPG>(img_path));
         }
-
+        // Image is a PNG:
+        else {
+            images.push_back(make_unique<ImagePNG>(img_path));
+        }
     }
 
 }
@@ -91,7 +107,9 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
                 if (   extension == ".png"
                     || extension == ".PNG"
                     || extension == ".jpg"
-                    || extension == ".JPG" )
+                    || extension == ".JPG"
+                    || extension == ".jpeg"
+                    || extension == ".JPEG")
                 {
                     interface.print("Found: ")
                              .print(file.path().filename())
@@ -111,8 +129,8 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
     };
 }
 
-Command convert(Interface& interface, const string& folder_location, const vector<string>& valid_images,
-                const vector<unique_ptr<Image>>& images) {
+Command convert(Interface& interface, const string& folder_location, vector<string>& valid_images,
+                vector<unique_ptr<Image>>& images) {
     return Command{
         "Converts all images from the given folder into ASCII-art.",
         [&interface, &folder_location, &valid_images, &images] (const Interface&) {
@@ -127,9 +145,20 @@ Command convert(Interface& interface, const string& folder_location, const vecto
                 return 2;
             }
 
-            // Load images from folder to m_Images:
-            // todo
+            for (const auto& image : images) {
+                string path = image->get_path();
+                interface.print("Path: ")
+                         .print(path)
+                         .end_line();
+            }
 
+            // Convert all images into their RGB representation, then convert to ASCII:
+            for (const auto& image : images) {
+                // Convert the image to a local variable:
+                ImageRGB rgb_image = image->extract();
+            }
+
+            /*
             // Convert all images to ASCII-art and save them:
             for (const auto& image : images) {
                 // Convert the image to a local variable:
@@ -149,6 +178,7 @@ Command convert(Interface& interface, const string& folder_location, const vecto
                         throw runtime_error("Unexpected error when writing output.");
                 }
             }
+             */
 
             // todo
             interface.print("--not implemeted--")

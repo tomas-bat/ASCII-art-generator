@@ -4,7 +4,7 @@
  */
 #include "ImageJPG.hpp"
 
-ImageASCII ImageJPG::convert() const {
+ImageRGB ImageJPG::extract() const {
     // todo
-    return {}; // using {}, because ImageASCII is not implemented yet
+    return {}; // using {}, because ImageRGB is not implemented yet
 }
