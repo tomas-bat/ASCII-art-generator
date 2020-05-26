@@ -21,7 +21,7 @@ public:
     ImageRGB(size_t height, size_t width);
 
     void insert_to(size_t height, size_t width, unsigned char red, unsigned char green, unsigned char blue)
-    { m_Data.at(height).at(width) = RGB{red, green, blue}; } // todo: fix problem here, vector is out of range
+    { m_Data[height][width] = RGB{red, green, blue}; }
 
     void test_print() const;
 

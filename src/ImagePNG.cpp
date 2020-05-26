@@ -58,8 +58,10 @@ ImageRGB ImagePNG::extract() const {
     ImageRGB rgb_image(height, width);
 
     for (png_uint_32 i = 0; i < height; i++) {
+        int k = 0;
         for (png_uint_32 j = 0; j < 4*width; j += 4 ) {
-            rgb_image.insert_to(i, j, row_pointers[i][j], row_pointers[i][j + 1], row_pointers[i][j + 2]);
+            rgb_image.insert_to(i, k, row_pointers[i][j], row_pointers[i][j + 1], row_pointers[i][j + 2]);
+            k++;
         }
     }
 

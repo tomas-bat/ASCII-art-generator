@@ -10,11 +10,9 @@ using namespace std;
 
 
 ImageRGB::ImageRGB(size_t height, size_t width) : m_Height(height), m_Width(width) {
-    for (size_t i = 0; i < height; i++)
-        m_Data.emplace_back();
+    m_Data.resize(height);
     for (auto& row : m_Data) {
-        for (size_t j = 0; j < width; j++ )
-            row.emplace_back();
+        row.resize(width);
     }
 }
 
