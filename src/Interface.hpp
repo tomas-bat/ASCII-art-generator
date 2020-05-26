@@ -1,6 +1,8 @@
 /**
  * @author Tomáš Batěk <batekto2@fit.cvut.cz>
  * @date 30/04/2020
+ *
+ * @note Structure inspired by https://gitlab.fit.cvut.cz/bernhdav/pa2-minesweeper/
  */
 #pragma once
 

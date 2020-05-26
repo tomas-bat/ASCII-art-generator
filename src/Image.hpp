@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <filesystem>
 #include "ImageASCII.hpp"
 #include "ImageRGB.hpp"
 
@@ -27,7 +28,7 @@ public:
     virtual ~Image() = default;
 
     /**
-     * A virtual method which will be able to convert an image of a specific format into an universal image.
+     * A virtual method which will be able to convert an image of a specific format into an universal RGB image.
      *
      * @param folder_location   Location of the folder, where the converted image will be saved.
      * @return                  The new image in universal RGB representation (empty if the conversion fails).
@@ -39,7 +40,7 @@ public:
      *
      * @return The image filename.
      */
-    std::string get_name() const { return m_Name; }
+    std::string get_name() const { return std::__fs::filesystem::path(m_Path).filename(); }
 
     /**
      * A getter for the image path.
@@ -49,7 +50,6 @@ public:
     std::string get_path() const { return m_Path; }
     // todo
 protected:
-    std::string m_Name;
     std::string m_Path;
     // todo
 };

@@ -40,6 +40,7 @@ bool img_is_jpeg(const string& first_line) {
 }
 
 void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images, Interface& interface) {
+    int imgs_loaded = 0;
     for (const auto& img_path : valid_images) {
         bool is_png = true, is_jpeg = true;
 
@@ -64,19 +65,24 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
             is_jpeg = img_is_jpeg(first_line);
 
             if (!is_jpeg) {
-                interface.print(img_path)
+                interface.print(fs::path(img_path).filename())
                          .print(" is not a valid PNG or JPEG.")
                          .end_line();
                 continue;
             }
             images.push_back(make_unique<ImageJPG>(img_path));
+            imgs_loaded++;
         }
         // Image is a PNG:
         else {
             images.push_back(make_unique<ImagePNG>(img_path));
+            imgs_loaded++;
         }
     }
-
+    interface.print("Loaded ")
+            .print(to_string(imgs_loaded))
+            .print(" image(s) in total.")
+            .end_line();
 }
 
 Command folder(Interface& interface, string& folder_location, vector<string>& valid_files,
@@ -119,11 +125,6 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
             }
             // Load images from folder to m_Images:
             load_images(images, valid_files, interface);
-
-            interface.print("Found ")
-                     .print(to_string(valid_files.size()))
-                     .print(" file(s) in total.")
-                     .end_line();
             return 1;
         }
     };
@@ -145,17 +146,11 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
                 return 2;
             }
 
-            for (const auto& image : images) {
-                string path = image->get_path();
-                interface.print("Path: ")
-                         .print(path)
-                         .end_line();
-            }
-
             // Convert all images into their RGB representation, then convert to ASCII:
             for (const auto& image : images) {
-                // Convert the image to a local variable:
+                // Convert the image to a local RGB variable:
                 ImageRGB rgb_image = image->extract();
+                rgb_image.test_print();
             }
 
             /*

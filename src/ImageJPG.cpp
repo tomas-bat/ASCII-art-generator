@@ -6,5 +6,5 @@
 
 ImageRGB ImageJPG::extract() const {
     // todo
-    return {}; // using {}, because ImageRGB is not implemented yet
+    return ImageRGB(0, 0); // using {}, because ImageRGB is not implemented yet
 }
