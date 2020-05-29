@@ -8,6 +8,7 @@
 
 #include <string>
 #include <utility>
+#include <functional>
 #include "Interface.hpp"
 
 /**

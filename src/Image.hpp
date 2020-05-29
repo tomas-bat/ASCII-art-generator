@@ -10,6 +10,12 @@
 #include "ImageASCII.hpp"
 #include "ImageRGB.hpp"
 
+#ifdef __APPLE__
+namespace fs = std::__fs::filesystem;
+#else
+namespace fs = std::filesystem;
+#endif
+
 /**
  * This abstract class represents an image of a supported file format.
  */
@@ -40,7 +46,7 @@ public:
      *
      * @return The image filename.
      */
-    std::string get_name() const { return std::__fs::filesystem::path(m_Path).filename(); }
+    std::string get_name() const { return fs::path(m_Path).filename(); }
 
     /**
      * A getter for the image path.

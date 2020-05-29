@@ -13,12 +13,25 @@
 class ImageASCII {
 public:
     /**
-     * This method returns a specified row of the ASCII-art image.
+     * Constructor of ImageASCII sets the image width and height.
      *
-     * @param row_idx   The row index we want to get.
-     * @return          The row we want to get.
+     * @param height    Image height.
+     * @param width     Image width.
      */
-    const std::string& get_row(size_t row_idx) const { return m_Data.at(row_idx); }
+    ImageASCII(size_t height, size_t width);
+
+    /**
+     * A method to set a character of the ASCII-art image.
+     *
+     * @param height Position of the character.
+     * @param width  Position of the character.
+     * @param c      The character.
+     */
+    void insert_to(size_t height, size_t width, char c)
+    { m_Data[height][width] = c; }
+
+    std::string& operator[](size_t height)
+    { return m_Data[height]; }
 
     /**
      * A getter for the image width.
@@ -35,8 +48,8 @@ public:
     // todo
 private:
     std::vector<std::string> m_Data;
-    size_t m_Width;
     size_t m_Height;
+    size_t m_Width;
     // todo
 };
 

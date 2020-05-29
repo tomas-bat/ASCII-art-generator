@@ -28,7 +28,7 @@ public:
     ImageASCII to_ascii() const;
 private:
     std::vector< std::vector<RGB> > m_Data;
-    size_t m_Width;
     size_t m_Height;
+    size_t m_Width;
 };
 

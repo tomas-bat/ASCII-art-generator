@@ -8,6 +8,8 @@
 #include "Controller.hpp"
 #include "Image.hpp"
 
+
+
 /**
  * Class to represent a controller that controls the ASCII-art converter.
  */

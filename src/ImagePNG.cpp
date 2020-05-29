@@ -20,8 +20,6 @@ ImageRGB ImagePNG::extract() const {
     if (!fp)
         throw runtime_error("Unable to read image.");
 
-    cout << "hello" << endl;
-
     // Create library structs for PNG file reading:
     png_infop info_ptr, end_info;
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);

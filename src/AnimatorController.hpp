@@ -32,7 +32,7 @@ public:
     AnimatorController& operator= (const AnimatorController&) = delete;
 
 private:
-    __unused std::string m_Folder_location; // using __unused to silence warnings, variable will be used later
-    __unused int m_Valid_images = 0; // using __unused to silence warnings, variable will be used later
+    std::string m_Folder_location;
+    int m_Valid_images = 0;
 };
 

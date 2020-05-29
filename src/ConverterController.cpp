@@ -11,7 +11,13 @@
 #include "ImageJPG.hpp"
 #include "ImagePNG.hpp"
 
+
+#ifdef __APPLE__
 namespace fs = std::__fs::filesystem;
+#else
+namespace fs = std::filesystem;
+#endif
+
 using namespace std;
 
 Command back_converter() {
@@ -148,16 +154,18 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
 
             // Convert all images into their RGB representation, then convert to ASCII:
             for (const auto& image : images) {
+                interface.print("Converting ")
+                         .print(image->get_name())
+                         .print("...")
+                         .end_line();
                 // Convert the image to a local RGB variable:
                 ImageRGB rgb_image = image->extract();
-                rgb_image.test_print();
-            }
 
-            /*
-            // Convert all images to ASCII-art and save them:
-            for (const auto& image : images) {
-                // Convert the image to a local variable:
-                ImageASCII ascii_image = image->convert();
+                // Convert the RGB image to an ASCII image:
+                ImageASCII ascii_image = rgb_image.to_ascii();
+
+                // Create folder converted/:
+                fs::create_directory(folder_location + "/converted");
 
                 // Get the path where the new image will be saved to:
                 string save_path = folder_location + "/converted/" + image->get_name() + ".txt";
@@ -169,15 +177,18 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
 
                 // Save the ASCII-art image to the output file:
                 for (size_t i = 0; i < ascii_image.get_height(); i++) {
-                    if (!(out_file << ascii_image.get_row(i)))
+                    for (size_t j = 0; j < ascii_image.get_width(); j++) {
+                        if (!(out_file << ascii_image[i][j]))
+                        throw runtime_error("Unexpected error when writing output.");
+                    }
+                    if (!(out_file << endl))
                         throw runtime_error("Unexpected error when writing output.");
                 }
-            }
-             */
 
-            // todo
-            interface.print("--not implemeted--")
-                     .end_line();
+                interface.print("Converted to: ")
+                         .print(save_path)
+                         .end_line();
+            }
             return 1;
         }
     };
