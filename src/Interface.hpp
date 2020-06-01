@@ -49,6 +49,13 @@ public:
     bool eof() const { return m_In.eof(); }
 
     /**
+     * This method will read a size_t number from the input stream.
+     *
+     * @return The input number.
+     */
+    size_t get_num() const;
+
+    /**
      * This method prints a help for a command into the output.
      *
      * @param cmd_name[in]  Name of the command.

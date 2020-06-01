@@ -54,3 +54,10 @@ Interface& Interface::end_line() {
     m_Out << endl;
     return *this;
 }
+
+size_t Interface::get_num() const {
+    size_t num;
+    if (!(m_In >> num))
+        m_Out << "Wrong input." << endl;
+    return num;
+}

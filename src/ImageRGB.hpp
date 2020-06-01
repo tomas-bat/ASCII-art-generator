@@ -25,7 +25,7 @@ public:
 
     void test_print() const;
 
-    ImageASCII to_ascii() const;
+    ImageASCII to_ascii(size_t max_width) const;
 private:
     std::vector< std::vector<RGB> > m_Data;
     size_t m_Height;

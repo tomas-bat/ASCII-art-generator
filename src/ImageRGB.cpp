@@ -24,16 +24,36 @@ ImageRGB::ImageRGB(size_t height, size_t width) : m_Height(height), m_Width(widt
     }
 }
 
-ImageASCII ImageRGB::to_ascii() const {
+ImageASCII ImageRGB::to_ascii(size_t max_width) const {
 
-    ImageASCII ascii(m_Height, m_Width);
+    size_t out_width, out_height;
+    double i_step = 1, j_step = 1;
 
-    for (size_t i = 0; i < m_Height; i++) {
-        for (size_t j = 0; j < m_Width; j++) {
+    if (max_width != 0 && m_Width > max_width) {
+        double ratio = (max_width * 1.0) / (m_Width * 1.0);
+        out_width = m_Width * ratio;
+        out_height = m_Height * ratio;
+        i_step = (m_Height * 1.0) / (out_height * 1.0);
+        j_step = (m_Width * 1.0) / (out_width * 1.0);
+    }
+    else {
+        out_width = m_Width;
+        out_height = m_Height;
+    }
+
+    ImageASCII ascii(out_height, out_width);
+
+    double height_pos = 0;
+    for (size_t i = 0; i < out_height; i++) {
+        double width_pos = 0;
+        for (size_t j = 0; j < out_width; j++) {
             // Grey value:
-            int h = m_Data[i][j].R/3 + m_Data[i][j].G/3 + m_Data[i][j].B/3;
-            ascii.insert_to(i, j, get_char(h));
+            size_t w = width_pos, h = height_pos;
+            int g = m_Data[h][w].R/3 + m_Data[h][w].G/3 + m_Data[h][w].B/3;
+            ascii.insert_to(i, j, get_char(g));
+            width_pos += j_step;
         }
+        height_pos += i_step;
     }
     return ascii;
 }

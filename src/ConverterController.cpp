@@ -34,8 +34,26 @@ Command how_to(Interface& interface) {
             interface.print("First, you have to specify the folder in which the program will search for images "
                             "using command \"folder\", for example \"/home/users/john/imgs\".\n"
                             "After that, enter the command \"convert\" and a folder with converted images "
-                            "will be saved in the folder you have entered before.")
+                            "will be saved in the folder you have entered before.\n"
+                            "You can also set the maximum image width using command \"width <num>\","
+                            "if not specified or if you enter 0, the converted image will keep\n"
+                            "it's original dimensions.")
                      .end_line();
+            return 1;
+        }
+    };
+}
+
+Command width(Interface& interface, size_t& max_width) {
+    return Command{
+        "Sets the maximum width of the converted image.",
+        [&interface, &max_width] (const Interface&) {
+            size_t input_num = interface.get_num();
+            if (input_num == 0) {
+                interface.print("Images will keep their original dimensions.")
+                         .end_line();
+            }
+            max_width = input_num;
             return 1;
         }
     };
@@ -112,6 +130,7 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
             folder_location = path;
 
             valid_files.clear();
+            images.clear();
 
             // Find supported formats:
             for (const auto& file : fs::directory_iterator(path)) {
@@ -137,10 +156,10 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
 }
 
 Command convert(Interface& interface, const string& folder_location, vector<string>& valid_images,
-                vector<unique_ptr<Image>>& images) {
+                vector<unique_ptr<Image>>& images, size_t& max_width) {
     return Command{
         "Converts all images from the given folder into ASCII-art.",
-        [&interface, &folder_location, &valid_images, &images] (const Interface&) {
+        [&interface, &folder_location, &valid_images, &images, &max_width] (const Interface&) {
             if (folder_location.empty()) {
                 interface.print("You have to specify the folder first.")
                          .end_line();
@@ -162,7 +181,7 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
                 ImageRGB rgb_image = image->extract();
 
                 // Convert the RGB image to an ASCII image:
-                ImageASCII ascii_image = rgb_image.to_ascii();
+                ImageASCII ascii_image = rgb_image.to_ascii(max_width);
 
                 // Create folder converted/:
                 fs::create_directory(folder_location + "/converted");
@@ -179,7 +198,7 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
                 for (size_t i = 0; i < ascii_image.get_height(); i++) {
                     for (size_t j = 0; j < ascii_image.get_width(); j++) {
                         if (!(out_file << ascii_image[i][j]))
-                        throw runtime_error("Unexpected error when writing output.");
+                            throw runtime_error("Unexpected error when writing output.");
                     }
                     if (!(out_file << endl))
                         throw runtime_error("Unexpected error when writing output.");
@@ -200,7 +219,8 @@ ConverterController::ConverterController(const Interface& interface) : Controlle
     m_Commands.emplace("back", back_converter());
     m_Commands.emplace("howto", how_to(m_Interface));
     m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images, m_Images));
-    m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images));
+    m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images, m_Max_width));
+    m_Commands.emplace("width", width(m_Interface, m_Max_width));
 
     m_Welcome = "[ You're in the converter: ]\n";
 }
