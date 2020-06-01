@@ -50,14 +50,18 @@ ImageRGB ImagePNG::extract() const {
     png_uint_32 width = png_get_image_width(png_ptr, info_ptr);
     png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
 
+    // Get the number of channels:
+    int channels_cnt = (int)png_get_channels(png_ptr, info_ptr);
+
     // Array to access pixels:
     png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
 
     ImageRGB rgb_image(height, width);
 
+    // Read each pixel (3 or 4 channels):
     for (png_uint_32 i = 0; i < height; i++) {
         int k = 0;
-        for (png_uint_32 j = 0; j < 4*width; j += 4 ) {
+        for (png_uint_32 j = 0; j < channels_cnt * width; j += channels_cnt) {
             rgb_image.insert_to(i, k, row_pointers[i][j], row_pointers[i][j + 1], row_pointers[i][j + 2]);
             k++;
         }
@@ -65,8 +69,6 @@ ImageRGB ImagePNG::extract() const {
 
     // Free used memory
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-    // todo: free rows
-
 
     return rgb_image;
 }
