@@ -14,6 +14,7 @@ class ImageASCII {
 public:
     /**
      * Constructor of ImageASCII sets the image width and height.
+     * @note One RGB pixel is represented as two ASCII characters.
      *
      * @param height    Image height.
      * @param width     Image width.
@@ -28,7 +29,7 @@ public:
      * @param c      The character.
      */
     void insert_to(size_t height, size_t width, char c)
-    { m_Data[height][width] = c; }
+    { m_Data[height][width] = c; m_Data[height][++width] = c; }
 
     std::string& operator[](size_t height)
     { return m_Data[height]; }
@@ -45,11 +46,9 @@ public:
      */
     size_t get_height() const { return m_Height; }
 
-    // todo
 private:
     std::vector<std::string> m_Data;
     size_t m_Height;
     size_t m_Width;
-    // todo
 };
 
