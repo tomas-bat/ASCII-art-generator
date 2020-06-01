@@ -72,17 +72,56 @@ endif
 
 
 # Dependencies:
-AnimatorController.o: src/AnimatorController.cpp src/AnimatorController.hpp src/Controller.hpp src/Command.hpp src/Interface.hpp
-Application.o: src/Application.cpp src/Application.hpp src/Interface.hpp src/StartController.hpp src/Controller.hpp src/Command.hpp
+AnimatorController.o: src/AnimatorController.cpp \
+  src/AnimatorController.hpp src/Controller.hpp src/Command.hpp \
+  src/Interface.hpp
+AnimatorController.o: src/AnimatorController.hpp src/Controller.hpp \
+  src/Command.hpp src/Interface.hpp
+Application.o: src/Application.cpp src/Application.hpp src/Interface.hpp \
+  src/StartController.hpp src/Controller.hpp src/Command.hpp
+Application.o: src/Application.hpp src/Interface.hpp \
+  src/StartController.hpp src/Controller.hpp src/Command.hpp
 Command.o: src/Command.cpp src/Command.hpp src/Interface.hpp
-Controller.o: src/Controller.cpp src/Controller.hpp src/Command.hpp src/Interface.hpp
-ConverterController.o: src/ConverterController.cpp src/ConverterController.hpp src/Controller.hpp src/Command.hpp src/Interface.hpp src/Image.hpp src/ImageASCII.hpp src/ImageJPG.hpp src/ImagePNG.hpp
-EditorController.o: src/EditorController.cpp src/EditorController.hpp src/Controller.hpp src/Command.hpp src/Interface.hpp
+Command.o: src/Command.hpp src/Interface.hpp
+Controller.o: src/Controller.cpp src/Controller.hpp src/Command.hpp \
+  src/Interface.hpp
+Controller.o: src/Controller.hpp src/Command.hpp src/Interface.hpp
+ConverterController.o: src/ConverterController.cpp \
+  /usr/local/include/png.h /usr/local/include/pnglibconf.h \
+  /usr/local/include/pngconf.h /usr/local/include/jpeglib.h \
+  /usr/local/include/jconfig.h /usr/local/include/jmorecfg.h \
+  src/ConverterController.hpp src/Controller.hpp src/Command.hpp \
+  src/Interface.hpp src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp \
+  src/ImageJPG.hpp src/ImagePNG.hpp
+ConverterController.o: src/ConverterController.hpp src/Controller.hpp \
+  src/Command.hpp src/Interface.hpp src/Image.hpp src/ImageASCII.hpp \
+  src/ImageRGB.hpp
+EditorController.o: src/EditorController.cpp src/EditorController.hpp \
+  src/Controller.hpp src/Command.hpp src/Interface.hpp
+EditorController.o: src/EditorController.hpp src/Controller.hpp \
+  src/Command.hpp src/Interface.hpp
 Image.o: src/Image.cpp src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp
+Image.o: src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp
 ImageASCII.o: src/ImageASCII.cpp src/ImageASCII.hpp
-ImageJPG.o: src/ImageJPG.cpp src/ImageJPG.hpp src/Image.hpp src/ImageASCII.hpp
-ImagePNG.o: src/ImagePNG.cpp src/ImagePNG.hpp src/Image.hpp src/ImageASCII.hpp
+ImageASCII.o: src/ImageASCII.hpp
+ImageJPG.o: src/ImageJPG.cpp src/ImageJPG.hpp src/Image.hpp \
+  src/ImageASCII.hpp src/ImageRGB.hpp
+ImageJPG.o: src/ImageJPG.hpp src/Image.hpp src/ImageASCII.hpp \
+  src/ImageRGB.hpp
+ImagePNG.o: src/ImagePNG.cpp /usr/local/include/png.h \
+  /usr/local/include/pnglibconf.h /usr/local/include/pngconf.h \
+  src/ImagePNG.hpp src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp
+ImagePNG.o: src/ImagePNG.hpp src/Image.hpp src/ImageASCII.hpp \
+  src/ImageRGB.hpp
 ImageRGB.o: src/ImageRGB.cpp src/ImageRGB.hpp src/ImageASCII.hpp
+ImageRGB.o: src/ImageRGB.hpp src/ImageASCII.hpp
 Interface.o: src/Interface.cpp src/Interface.hpp
-StartController.o: src/StartController.cpp src/StartController.hpp src/Controller.hpp src/Command.hpp src/Interface.hpp src/ConverterController.hpp src/Image.hpp src/ImageASCII.hpp src/AnimatorController.hpp src/EditorController.hpp
-main.o: src/main.cpp src/Application.hpp src/Interface.hpp src/StartController.hpp src/Controller.hpp src/Command.hpp
+Interface.o: src/Interface.hpp
+StartController.o: src/StartController.cpp src/StartController.hpp \
+  src/Controller.hpp src/Command.hpp src/Interface.hpp \
+  src/ConverterController.hpp src/Image.hpp src/ImageASCII.hpp \
+  src/ImageRGB.hpp src/AnimatorController.hpp src/EditorController.hpp
+StartController.o: src/StartController.hpp src/Controller.hpp \
+  src/Command.hpp src/Interface.hpp
+main.o: src/main.cpp src/Application.hpp src/Interface.hpp \
+  src/StartController.hpp src/Controller.hpp src/Command.hpp

@@ -10,5 +10,5 @@ using namespace std;
 ImageASCII::ImageASCII(size_t height, size_t width) : m_Height(height), m_Width(width) {
     m_Data.resize(m_Height);
     for (auto& row : m_Data)
-        row.resize(2 * m_Width);
+        row.resize(m_Width);
 }

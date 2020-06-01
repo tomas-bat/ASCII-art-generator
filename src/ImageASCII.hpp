@@ -29,7 +29,7 @@ public:
      * @param c      The character.
      */
     void insert_to(size_t height, size_t width, char c)
-    { m_Data[height][width] = c; m_Data[height][++width] = c; }
+    { m_Data[height][width] = c; }
 
     std::string& operator[](size_t height)
     { return m_Data[height]; }

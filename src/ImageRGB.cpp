@@ -27,8 +27,11 @@ ImageRGB::ImageRGB(size_t height, size_t width) : m_Height(height), m_Width(widt
 
 ImageASCII ImageRGB::to_ascii(size_t max_width) const {
 
+    // One pixel is represented by two ASCII characters in width:
+    max_width /= 2;
+
     size_t out_width, out_height;
-    double i_step = 1, j_step = 1;
+    double i_step = 1, j_step = 0.5; // again, 2 characters for 1 pixel in width, hence the 0.5
 
     // If the width is smaller than the maximum width, we have to resize:
     if (max_width != 0 && m_Width > max_width) {
@@ -36,7 +39,7 @@ ImageASCII ImageRGB::to_ascii(size_t max_width) const {
         out_width = m_Width * ratio;
         out_height = m_Height * ratio;
         i_step = (m_Height * 1.0) / (out_height * 1.0);
-        j_step = (m_Width * 1.0) / (out_width * 1.0);
+        j_step = (m_Width * 1.0) / (out_width * 1.0) * 0.5; // again, 2 characters for 1 pixel in width, hence the 0.5
     }
     // No need to resize:
     else {
@@ -44,12 +47,12 @@ ImageASCII ImageRGB::to_ascii(size_t max_width) const {
         out_height = m_Height;
     }
 
-    ImageASCII ascii(out_height, out_width);
+    ImageASCII ascii(out_height, 2 * out_width);
 
     double height_pos = 0; // Height position in the original RGB image
     for (size_t i = 0; i < out_height; i++) {
         double width_pos = 0; // Width position in the original RGB image
-        for (size_t j = 0; j < out_width; j++) {
+        for (size_t j = 0; j < 2 * out_width; j++) {
             // Floored positions:
             size_t w = width_pos, h = height_pos;
             // Grey value:

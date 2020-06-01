@@ -196,10 +196,8 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
 
                 // Save the ASCII-art image to the output file:
                 for (size_t i = 0; i < ascii_image.get_height(); i++) {
-                    for (size_t j = 0; j < ascii_image.get_width(); j++) {
-                        if (!(out_file << ascii_image[i][j]))
-                            throw runtime_error("Unexpected error when writing output.");
-                    }
+                    if (!(out_file << ascii_image[i]))
+                        throw runtime_error("Unexpected error when writing output.");
                     if (!(out_file << endl))
                         throw runtime_error("Unexpected error when writing output.");
                 }
