@@ -11,7 +11,7 @@
 
 using namespace std;
 
-ImageRGB ImagePNG::extract() const {
+ImageRGB ImagePNG::extract(bool invert) const {
 
     // No need to check whether the file has a correct PNG header, that was already checked in ConverterController
     FILE* fp = fopen(m_Path.c_str(), "rb");
@@ -58,11 +58,21 @@ ImageRGB ImagePNG::extract() const {
 
     ImageRGB rgb_image(height, width);
 
+
+    bool alpha = (channels_cnt == 4);
     // Read each pixel (3 or 4 channels):
     for (png_uint_32 i = 0; i < height; i++) {
         int k = 0;
         for (png_uint_32 j = 0; j < channels_cnt * width; j += channels_cnt) {
-            rgb_image.insert_to(i, k, row_pointers[i][j], row_pointers[i][j + 1], row_pointers[i][j + 2]);
+            // If the image has an alpha channel and it's fully transparent, set pixel as white/black:
+            if (alpha && row_pointers[i][j + 3] == 0) {
+                if (invert)
+                    rgb_image.insert_to(i, k, 0, 0, 0);
+                else
+                    rgb_image.insert_to(i, k, 255, 255, 255);
+            }
+            else
+                rgb_image.insert_to(i, k, row_pointers[i][j], row_pointers[i][j + 1], row_pointers[i][j + 2]);
             k++;
         }
     }

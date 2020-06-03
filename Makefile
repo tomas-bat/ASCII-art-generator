@@ -2,7 +2,7 @@
 
 TARGET = batekto2
 CXX = g++
-CXX_FLAGS = -Wall -pedantic -Wextra -std=c++17
+CXX_FLAGS = -Wall -pedantic -Wextra -std=c++17 -DPNG_SETJMP_NOT_SUPPORTED
 SANITIZER_FLAG = -g -fsanitize=address
 LD = g++
 

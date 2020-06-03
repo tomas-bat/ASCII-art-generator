@@ -35,9 +35,12 @@ Command how_to(Interface& interface) {
                             "using command \"folder\", for example \"/home/users/john/imgs\".\n"
                             "After that, enter the command \"convert\" and a folder with converted images "
                             "will be saved in the folder you have entered before.\n"
-                            "You can also set the maximum image width using command \"width <num>\","
-                            "if not specified or if you enter 0, the converted image will keep\n"
-                            "it's original dimensions.")
+                            "You can also set the maximum image width using command \"width <num>\". "
+                            "If not specified or if you enter 0, the converted image will keep\n"
+                            "it's original dimensions.\n"
+                            "If you are displaying ASCII images in a dark terminal, it's recommended "
+                            "to use \"invert true\", which will invert the ASCII conversion. You can then "
+                            "set it back using \"invert false\".")
                      .end_line();
             return 1;
         }
@@ -54,6 +57,10 @@ Command width(Interface& interface, size_t& max_width) {
                          .end_line();
             }
             max_width = input_num;
+            interface.print("Maximum ASCII image width will now be ")
+                     .print(to_string(max_width))
+                     .print(" characters.")
+                     .end_line();
             return 1;
         }
     };
@@ -66,7 +73,6 @@ bool img_is_jpeg(const string& first_line) {
 void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images, Interface& interface) {
     int imgs_loaded = 0;
     for (const auto& img_path : valid_images) {
-        bool is_png = true, is_jpeg = true;
 
         FILE* fp = fopen(img_path.c_str(), "rb");
         if (!fp)
@@ -78,7 +84,6 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
 
         // Not a PNG, check if it's a JPEG:
         if (png_sig_cmp(reinterpret_cast<png_const_bytep>(header), 0, bytes_to_check)) {
-            is_png = false;
 
             ifstream img(img_path, ios::binary);
             if (!img)
@@ -86,9 +91,8 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
 
             string first_line;
             getline(img, first_line);
-            is_jpeg = img_is_jpeg(first_line);
 
-            if (!is_jpeg) {
+            if (!img_is_jpeg(first_line)) {
                 interface.print(fs::path(img_path).filename())
                          .print(" is not a valid PNG or JPEG.")
                          .end_line();
@@ -156,10 +160,10 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
 }
 
 Command convert(Interface& interface, const string& folder_location, vector<string>& valid_images,
-                vector<unique_ptr<Image>>& images, size_t& max_width) {
+                vector<unique_ptr<Image>>& images, const size_t& max_width, const bool& invert) {
     return Command{
         "Converts all images from the given folder into ASCII-art.",
-        [&interface, &folder_location, &valid_images, &images, &max_width] (const Interface&) {
+        [&interface, &folder_location, &valid_images, &images, &max_width, &invert] (const Interface&) {
             if (folder_location.empty()) {
                 interface.print("You have to specify the folder first.")
                          .end_line();
@@ -178,10 +182,10 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
                          .print("...")
                          .end_line();
                 // Convert the image to a local RGB variable:
-                ImageRGB rgb_image = image->extract();
+                ImageRGB rgb_image = image->extract(invert);
 
                 // Convert the RGB image to an ASCII image:
-                ImageASCII ascii_image = rgb_image.to_ascii(max_width);
+                ImageASCII ascii_image = rgb_image.to_ascii(max_width, invert);
 
                 // Create folder converted/:
                 fs::create_directory(folder_location + "/converted");
@@ -211,14 +215,41 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
     };
 }
 
+Command invert(Interface& interface, bool& inverted){
+    return Command{
+        "Sets whether the ASCII image converts inverted or not.",
+        [&interface, &inverted] (const Interface&) {
+            string input = interface.get_string();
+            if (input == "true") {
+                inverted = true;
+                interface.print("Conversion set for a dark terminal.")
+                         .end_line();
+            }
+            else if (input == "false") {
+                inverted = false;
+                interface.print("Conversion set for a white terminal.")
+                        .end_line();
+            }
+            else {
+                interface.print(R"(Inverted must be "true" or "false".)")
+                         .end_line();
+                return 2;
+            }
+            return 1;
+        }
+    };
+}
+
 // todo: commands
 
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());
     m_Commands.emplace("howto", how_to(m_Interface));
     m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images, m_Images));
-    m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images, m_Max_width));
+    m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images,
+                                          m_Max_width, m_Invert));
     m_Commands.emplace("width", width(m_Interface, m_Max_width));
+    m_Commands.emplace("invert", invert(m_Interface, m_Invert));
 
     m_Welcome = "[ You're in the converter: ]\n";
 }

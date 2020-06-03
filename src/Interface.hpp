@@ -53,7 +53,14 @@ public:
      *
      * @return The input number.
      */
-    size_t get_num() const;
+    size_t get_num();
+
+    /**
+     * This method will read any string from the input stream.
+     *
+     * @return The input string;
+     */
+    std::string get_string();
 
     /**
      * This method prints a help for a command into the output.

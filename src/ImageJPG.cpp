@@ -10,7 +10,9 @@
 
 using namespace std;
 
-ImageRGB ImageJPG::extract() const {
+ImageRGB ImageJPG::extract(bool invert) const {
+
+    (void)invert; // parameter is useless for JPEG, silencing warning
 
     // No need to check if the header contains "JFIF", already checked in ConverterController
     FILE* fp = fopen(m_Path.c_str(), "rb");

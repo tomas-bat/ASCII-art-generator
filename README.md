@@ -48,9 +48,26 @@ Program uživatel spustí a pomocí příkazů do konzole ho bude ovládat.
 - `help` zobrazí nápovědu (funguje v každém podprogramu)
 - `quit` ukončí program
 
-V podprogramu pro konverzi obrázků do ASCII-artu:
+#### V podprogramu pro konverzi obrázků do ASCII-artu:
+
+Konvertor potřebuje pro konverzi znát umístění složky, odkud bude načítat obrázky.
+Pokud uživatel složku nastaví a program z ní načte validní obrázky, je schopen konvertovat. 
+Pokud uživatel nezadá žádné další parametry pro konverzi a sputí ji, program překonvertuje
+načtené obrázky ze složky v původním rozlišení (jeden pixel je reprezentován dvěma znaky)
+a přizpůsobené světlému terminálu do ASCII-art podoby, které uloží do podsložky converted/ v původně
+zadané složce. Uživatel může před konverzí zadat maximální šířku ve znacích,
+poté budou všechny ASCII-art obrázky mít maximálně takovou šířku. Dále může uživatel před konverzí
+zadat, zda chce ASCII-art obrázky přizpůsobit tmavému terminálu.
+
+Pokud formát obrázku podporuje průhlednost, tak budou všechny zcela průhledné pixely nastaveny
+na bílou nebo černou podle toho, jak je nastavena inverze.
+
 - `howto` zobrazí nápovědu, jak konvertovat obrázky
 - `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
+- `width <num>` nastaví maximální šířku (ve znacích) pro konvertované obrázky, 0 ponechá původní velikosti
+(výchozí nastavení)
+- `invert true` nastaví inverzi konvertovaných obrázků, doporučeno pro tmavý terminál
+- `invert false` zruší inverzi konvertovaných obrázků (výchozí nastavení), doporučeno pro světlý terminál
 - `convert` vytvoří v zadané složce podsložku s konvertovanými obrázky 
 - `back` se vrátí zpět do menu programu
 

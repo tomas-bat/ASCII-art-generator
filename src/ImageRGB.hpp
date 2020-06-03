@@ -44,7 +44,7 @@ public:
      * @param max_width     Maximum width of the ASCII image.
      * @return              The ASCII image.
      */
-    ImageASCII to_ascii(size_t max_width) const;
+    ImageASCII to_ascii(size_t max_width, bool invert) const;
 
 private:
     std::vector< std::vector<RGB> > m_Data;

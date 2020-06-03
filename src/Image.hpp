@@ -36,10 +36,12 @@ public:
     /**
      * A virtual method which will be able to convert an image of a specific format into an universal RGB image.
      *
-     * @param folder_location   Location of the folder, where the converted image will be saved.
+     * @param invert            Specifies whether a fully transparent pixel is set to a white pixel or a black pixel.
+     *                          False is made for white backgrounds, true is made for black backgrounds. This only
+     *                          works with file formats that support transparency.
      * @return                  The new image in universal RGB representation (empty if the conversion fails).
      */
-    virtual ImageRGB extract() const = 0;
+    virtual ImageRGB extract(bool invert) const = 0;
 
     /**
      * A getter for the image filename.

@@ -55,9 +55,19 @@ Interface& Interface::end_line() {
     return *this;
 }
 
-size_t Interface::get_num() const {
+std::string Interface::get_string() {
+    string input;
+    if (!(m_In >> input))
+        throw runtime_error("Unexpected error when reading a string from input.");
+    return input;
+}
+
+size_t Interface::get_num() {
     size_t num;
-    if (!(m_In >> num))
-        m_Out << "Wrong input." << endl;
+    if (!(m_In >> num)) {
+        if (!(m_Out << "Wrong input." << endl))
+            throw runtime_error("Unable to print output.");
+
+    }
     return num;
 }

@@ -44,5 +44,6 @@ private:
     std::vector<std::string> m_Valid_images;
     std::string m_Folder_location;
     size_t m_Max_width = 0;
+    bool m_Invert = false;
 };
 
