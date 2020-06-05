@@ -22,15 +22,17 @@ string Interface::get_command() {
     return command;
 }
 
-std::string Interface::get_path() {
+std::string Interface::get_path(const std::string& str) {
     string path, out_path;
-    if (!(m_Out << "Enter path to folder: /"))
+    if (!(m_Out << "Enter path to " << str << ": /"))
         throw runtime_error("Unable to print output.");
     out_path += "/";
     getline(m_In, path);
     getline(m_In, path);
+    if (m_In.eof())
+        return string();
     if (m_In.fail()) {
-        if (!(m_Out << "Wrong input."))
+        if (!(m_Out << endl << "Wrong input." << endl))
             throw runtime_error("Unable to print output.");
         else
             return string();

@@ -9,17 +9,15 @@
 
 using namespace std;
 
-char get_char(int gray_value, bool invert) {
+char get_char(int gray_value, bool invert, const string& transition, const string& inverted) {
     // chars, chars_len and interval are called many times during the conversion and they are not modified
-    const static string chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
-    const static string invert_chars = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
-    const static double chars_len = chars.size();
-    const static double invert_chars_len = invert_chars.size();
+    const static double chars_len = transition.size();
+    const static double invert_chars_len = inverted.size();
     const static double interval = chars_len/256;
     const static double invert_interval = invert_chars_len/256;
     if (invert)
-        return invert_chars[gray_value * invert_interval];
-    return chars[gray_value * interval];
+        return inverted[gray_value * invert_interval];
+    return transition[gray_value * interval];
 }
 
 ImageRGB::ImageRGB(size_t height, size_t width) : m_Height(height), m_Width(width) {
@@ -29,7 +27,7 @@ ImageRGB::ImageRGB(size_t height, size_t width) : m_Height(height), m_Width(widt
     }
 }
 
-ImageASCII ImageRGB::to_ascii(size_t max_width, bool invert) const {
+ImageASCII ImageRGB::to_ascii(size_t max_width, bool invert, const string& transition, const string& inverted) const {
 
     // One pixel is represented by two ASCII characters in width:
     max_width /= 2;
@@ -61,7 +59,7 @@ ImageASCII ImageRGB::to_ascii(size_t max_width, bool invert) const {
             size_t w = width_pos, h = height_pos;
             // Grey value:
             int g = m_Data[h][w].R/3 + m_Data[h][w].G/3 + m_Data[h][w].B/3;
-            ascii.insert_to(i, j, get_char(g, invert));
+            ascii.insert_to(i, j, get_char(g, invert, transition, inverted));
             width_pos += j_step;
         }
         height_pos += i_step;

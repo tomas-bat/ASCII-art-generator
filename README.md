@@ -57,7 +57,8 @@ načtené obrázky ze složky v původním rozlišení (jeden pixel je reprezent
 a přizpůsobené světlému terminálu do ASCII-art podoby, které uloží do podsložky converted/ v původně
 zadané složce. Uživatel může před konverzí zadat maximální šířku ve znacích,
 poté budou všechny ASCII-art obrázky mít maximálně takovou šířku. Dále může uživatel před konverzí
-zadat, zda chce ASCII-art obrázky přizpůsobit tmavému terminálu.
+zadat, zda chce ASCII-art obrázky přizpůsobit tmavému terminálu. Uživatel také může načíst
+vlastní ASCII přechod ze souboru, poté bude program využívat pro konverzi tyto znaky.
 
 Pokud formát obrázku podporuje průhlednost, tak budou všechny zcela průhledné pixely nastaveny
 na bílou nebo černou podle toho, jak je nastavena inverze.
@@ -68,6 +69,8 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 (výchozí nastavení)
 - `invert true` nastaví inverzi konvertovaných obrázků, doporučeno pro tmavý terminál
 - `invert false` zruší inverzi konvertovaných obrázků (výchozí nastavení), doporučeno pro světlý terminál
+- `custom` se dotáže na umístění souboru, odkud má program načíst vlastní ASCII přechod
+- `reset` obnoví všechna nastevní do výchozí hodnoty
 - `convert` vytvoří v zadané složce podsložku s konvertovanými obrázky 
 - `back` se vrátí zpět do menu programu
 

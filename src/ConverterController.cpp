@@ -118,9 +118,9 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
     return Command{
         "Specify the folder with images.",
         [&interface, &folder_location, &valid_files, &images] (const Interface&) {
-            string path = interface.get_path();
-            if (interface.eof())
-                return -1;
+            string path = interface.get_path("folder");
+            if (interface.eof() || path.empty())
+                return 2;
 
             // Check if it's a valid directory:
             try {
@@ -160,10 +160,12 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
 }
 
 Command convert(Interface& interface, const string& folder_location, vector<string>& valid_images,
-                vector<unique_ptr<Image>>& images, const size_t& max_width, const bool& invert) {
+                vector<unique_ptr<Image>>& images, const size_t& max_width, const bool& invert,
+                const string& transition, const string& inverted) {
     return Command{
         "Converts all images from the given folder into ASCII-art.",
-        [&interface, &folder_location, &valid_images, &images, &max_width, &invert] (const Interface&) {
+        [&interface, &folder_location, &valid_images, &images, &max_width, &invert,
+         &transition, &inverted] (const Interface&) {
             if (folder_location.empty()) {
                 interface.print("You have to specify the folder first.")
                          .end_line();
@@ -185,7 +187,7 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
                 ImageRGB rgb_image = image->extract(invert);
 
                 // Convert the RGB image to an ASCII image:
-                ImageASCII ascii_image = rgb_image.to_ascii(max_width, invert);
+                ImageASCII ascii_image = rgb_image.to_ascii(max_width, invert, transition, inverted);
 
                 // Create folder converted/:
                 fs::create_directory(folder_location + "/converted");
@@ -240,16 +242,66 @@ Command invert(Interface& interface, bool& inverted){
     };
 }
 
-// todo: commands
+Command custom(Interface& interface, string& m_Transition, string& m_Transition_inverted) {
+    return Command{
+        "Loads a custom ASCII transitiom from a file.",
+        [&interface, &m_Transition, &m_Transition_inverted] (const Interface&) {
+            string path = interface.get_path("file");
+            ifstream file(path, ios::binary);
+            if (!file) {
+                interface.print("Couldn't open such file.")
+                         .end_line();
+                return 2;
+            }
+            string transition;
+            getline(file, transition);
+            if (transition.empty()) {
+                interface.print("No characters found.")
+                         .end_line();
+                return 2;
+            }
+            m_Transition = transition;
+            reverse(transition.begin(), transition.end());
+            m_Transition_inverted = transition;
+            interface.print("Custom characters loaded.")
+                     .end_line();
+            return 1;
+        }
+    };
+}
+
+Command reset(Interface& interface, vector<unique_ptr<Image>>& images, vector<string>& valid_images,
+              string& folder_location, string& transition, string& transition_inverted, size_t& max_width,
+              bool& invert) {
+    return Command{
+        "Resets all settings to default.",
+        [&interface, &images, &valid_images, &folder_location, &transition, &transition_inverted,
+         &max_width, &invert] (const Interface&) {
+            images.clear();
+            valid_images.clear();
+            folder_location.clear();
+            transition = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+            transition_inverted = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+            max_width = 0;
+            invert = false;
+            interface.print("All settings changed to default.")
+                     .end_line();
+            return 1;
+        }
+    };
+}
 
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());
     m_Commands.emplace("howto", how_to(m_Interface));
     m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images, m_Images));
     m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images,
-                                          m_Max_width, m_Invert));
+                                          m_Max_width, m_Invert, m_ASCII_transition, m_ASCII_transition_inverted));
     m_Commands.emplace("width", width(m_Interface, m_Max_width));
     m_Commands.emplace("invert", invert(m_Interface, m_Invert));
+    m_Commands.emplace("custom", custom(m_Interface, m_ASCII_transition, m_ASCII_transition_inverted));
+    m_Commands.emplace("reset", reset(m_Interface, m_Images, m_Valid_images, m_Folder_location, m_ASCII_transition,
+                                      m_ASCII_transition_inverted, m_Max_width, m_Invert));
 
     m_Welcome = "[ You're in the converter: ]\n";
 }

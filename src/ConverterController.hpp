@@ -43,6 +43,8 @@ private:
     std::vector<std::unique_ptr<Image>> m_Images;
     std::vector<std::string> m_Valid_images;
     std::string m_Folder_location;
+    std::string m_ASCII_transition = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    std::string m_ASCII_transition_inverted = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
     size_t m_Max_width = 0;
     bool m_Invert = false;
 };

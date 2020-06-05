@@ -39,7 +39,7 @@ public:
      *
      * @return The command given in by a user.
      */
-    std::string get_path();
+    std::string get_path(const std::string& str);
 
     /**
      * A getter for m_In end of file status.
