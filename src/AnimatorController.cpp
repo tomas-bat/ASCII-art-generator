@@ -14,6 +14,16 @@ Command back_animator() {
     };
 }
 
+Command folder(Interface& interface) {
+    return Command{
+        "",
+        [] (Interface&) {
+
+            return 1;
+        }
+    };
+}
+
 // todo: commands
 
 AnimatorController::AnimatorController(const Interface& interface) : Controller(interface) {

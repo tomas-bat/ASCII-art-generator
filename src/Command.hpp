@@ -24,9 +24,9 @@ public:
     /**
      * Constructor of command.
      * @param[in] help  A string that says what the command does.
-     * @param func      The function of the command, with a return value of int and a parameter of const Interface&.
+     * @param func      The function of the command, with a return value of int and a parameter of Interface&.
      */
-    Command(std::string help, std::function<int (const Interface&)> func) : m_Help(std::move(help)), m_Function(std::move(func)) {}
+    Command(std::string help, std::function<int (Interface&)> func) : m_Help(std::move(help)), m_Function(std::move(func)) {}
 
     /**
      * A getter for the help string.
@@ -41,10 +41,10 @@ public:
      * @param[in] interface     The interface to execute the command into.
      * @return                  Return value of the function.
      */
-    int execute(const Interface& interface) const { return m_Function(interface); }
+    int execute(Interface& interface) const { return m_Function(interface); }
 
 private:
     std::string m_Help;
-    std::function<int (const Interface&)> m_Function;
+    std::function<int (Interface&)> m_Function;
 };
 

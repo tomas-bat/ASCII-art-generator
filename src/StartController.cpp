@@ -24,9 +24,11 @@ Command go_to_converter(Interface& interface, const string& welcome, const Comma
             if (ConverterController(interface).run() == -1)
                 return 0;
 
-            // After going back, show welcome and help again:
-            interface.print(welcome);
-            help.execute(interface);
+            // After going back (and not at EOF), show welcome and help again:
+            if (!interface.eof()) {
+                interface.print(welcome);
+                help.execute(interface);
+            }
             return 1;
         }
     };
@@ -40,9 +42,11 @@ Command go_to_animator(Interface& interface, const string& welcome, const Comman
                 return 0;
 
 
-            // After going back, show welcome and help again:
-            interface.print(welcome);
-            help.execute(interface);
+            // After going back (and not at EOF), show welcome and help again:
+            if (!interface.eof()) {
+                interface.print(welcome);
+                help.execute(interface);
+            }
             return 1;
         }
     };
@@ -55,9 +59,11 @@ Command go_to_editor(Interface& interface, const string& welcome, const Command&
                 if (EditorController(interface).run() == -1)
                     return 0;
 
-                // After going back, show welcome and help again:
-                interface.print(welcome);
-                help.execute(interface);
+                // After going back (and not at EOF), show welcome and help again:
+                if (!interface.eof()) {
+                    interface.print(welcome);
+                    help.execute(interface);
+                }
                 return 1;
             }
     };

@@ -23,14 +23,14 @@ using namespace std;
 Command back_converter() {
     return Command{
             "Goes back to start.",
-            [] (const Interface&) { return 0; }
+            [] (Interface&) { return 0; }
     };
 }
 
-Command how_to(Interface& interface) {
+Command how_to() {
     return Command{
         "Shows how to convert images.",
-     [&interface] (const Interface&) {
+     [] (Interface& interface) {
             interface.print("First, you have to specify the folder in which the program will search for images "
                             "using command \"folder\", for example \"/home/users/john/imgs\".\n"
                             "After that, enter the command \"convert\" and a folder with converted images "
@@ -47,10 +47,10 @@ Command how_to(Interface& interface) {
     };
 }
 
-Command width(Interface& interface, size_t& max_width) {
+Command width(size_t& max_width) {
     return Command{
         "Sets the maximum width of the converted image.",
-        [&interface, &max_width] (const Interface&) {
+        [&max_width] (Interface& interface) {
             size_t input_num = interface.get_num();
             if (input_num == 0) {
                 interface.print("Images will keep their original dimensions.")
@@ -113,11 +113,11 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
             .end_line();
 }
 
-Command folder(Interface& interface, string& folder_location, vector<string>& valid_files,
+Command folder(string& folder_location, vector<string>& valid_files,
                vector<unique_ptr<Image>>& images) {
     return Command{
         "Specify the folder with images.",
-        [&interface, &folder_location, &valid_files, &images] (const Interface&) {
+        [&folder_location, &valid_files, &images] (Interface& interface) {
             string path = interface.get_path("folder");
             if (interface.eof() || path.empty())
                 return 2;
@@ -159,13 +159,13 @@ Command folder(Interface& interface, string& folder_location, vector<string>& va
     };
 }
 
-Command convert(Interface& interface, const string& folder_location, vector<string>& valid_images,
+Command convert(const string& folder_location, vector<string>& valid_images,
                 vector<unique_ptr<Image>>& images, const size_t& max_width, const bool& invert,
                 const string& transition, const string& inverted) {
     return Command{
         "Converts all images from the given folder into ASCII-art.",
-        [&interface, &folder_location, &valid_images, &images, &max_width, &invert,
-         &transition, &inverted] (const Interface&) {
+        [&folder_location, &valid_images, &images, &max_width, &invert,
+         &transition, &inverted] (Interface& interface) {
             if (folder_location.empty()) {
                 interface.print("You have to specify the folder first.")
                          .end_line();
@@ -217,10 +217,10 @@ Command convert(Interface& interface, const string& folder_location, vector<stri
     };
 }
 
-Command invert(Interface& interface, bool& inverted){
+Command invert(bool& inverted){
     return Command{
         "Sets whether the ASCII image converts inverted or not.",
-        [&interface, &inverted] (const Interface&) {
+        [&inverted] (Interface& interface) {
             string input = interface.get_string();
             if (input == "true") {
                 inverted = true;
@@ -242,10 +242,10 @@ Command invert(Interface& interface, bool& inverted){
     };
 }
 
-Command custom(Interface& interface, string& m_Transition, string& m_Transition_inverted) {
+Command custom(string& m_Transition, string& m_Transition_inverted) {
     return Command{
         "Loads a custom ASCII transitiom from a file.",
-        [&interface, &m_Transition, &m_Transition_inverted] (const Interface&) {
+        [&m_Transition, &m_Transition_inverted] (Interface& interface) {
             string path = interface.get_path("file");
             ifstream file(path, ios::binary);
             if (!file) {
@@ -270,13 +270,13 @@ Command custom(Interface& interface, string& m_Transition, string& m_Transition_
     };
 }
 
-Command reset(Interface& interface, vector<unique_ptr<Image>>& images, vector<string>& valid_images,
+Command reset(vector<unique_ptr<Image>>& images, vector<string>& valid_images,
               string& folder_location, string& transition, string& transition_inverted, size_t& max_width,
               bool& invert) {
     return Command{
         "Resets all settings to default.",
-        [&interface, &images, &valid_images, &folder_location, &transition, &transition_inverted,
-         &max_width, &invert] (const Interface&) {
+        [&images, &valid_images, &folder_location, &transition, &transition_inverted,
+         &max_width, &invert] (Interface& interface) {
             images.clear();
             valid_images.clear();
             folder_location.clear();
@@ -293,14 +293,14 @@ Command reset(Interface& interface, vector<unique_ptr<Image>>& images, vector<st
 
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());
-    m_Commands.emplace("howto", how_to(m_Interface));
-    m_Commands.emplace("folder", folder(m_Interface, m_Folder_location, m_Valid_images, m_Images));
-    m_Commands.emplace("convert", convert(m_Interface, m_Folder_location, m_Valid_images, m_Images,
+    m_Commands.emplace("howto", how_to());
+    m_Commands.emplace("folder", folder(m_Folder_location, m_Valid_images, m_Images));
+    m_Commands.emplace("convert", convert(m_Folder_location, m_Valid_images, m_Images,
                                           m_Max_width, m_Invert, m_ASCII_transition, m_ASCII_transition_inverted));
-    m_Commands.emplace("width", width(m_Interface, m_Max_width));
-    m_Commands.emplace("invert", invert(m_Interface, m_Invert));
-    m_Commands.emplace("custom", custom(m_Interface, m_ASCII_transition, m_ASCII_transition_inverted));
-    m_Commands.emplace("reset", reset(m_Interface, m_Images, m_Valid_images, m_Folder_location, m_ASCII_transition,
+    m_Commands.emplace("width", width(m_Max_width));
+    m_Commands.emplace("invert", invert(m_Invert));
+    m_Commands.emplace("custom", custom(m_ASCII_transition, m_ASCII_transition_inverted));
+    m_Commands.emplace("reset", reset(m_Images, m_Valid_images, m_Folder_location, m_ASCII_transition,
                                       m_ASCII_transition_inverted, m_Max_width, m_Invert));
 
     m_Welcome = "[ You're in the converter: ]\n";

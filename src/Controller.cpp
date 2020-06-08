@@ -16,14 +16,14 @@ int Controller::run() {
     while (true) {
         // If EOF is reached at input, end the program:
         if (m_Interface.eof())
-            return -1;
+            return 0;
 
         // Get the command from the interface:
         string command = m_Interface.get_command();
 
         // If EOF is reached at input, end the program:
         if (m_Interface.eof())
-            return -1;
+            return 0;
 
         auto it = m_Commands.find(command);
 
