@@ -4,6 +4,9 @@
  */
 
 #include <string>
+#include <sys/ioctl.h>
+#include <cstdio>
+#include <unistd.h>
 #include "Controller.hpp"
 
 using namespace std;
@@ -17,6 +20,13 @@ int Controller::run() {
         // If EOF is reached at input, end the program:
         if (m_Interface.eof())
             return 0;
+
+        // Write a line of '-':
+        struct winsize w{};
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+        for (size_t i = 0; i < w.ws_col; i++)
+            cout << "-";
+        cout << endl;
 
         // Get the command from the interface:
         string command = m_Interface.get_command();

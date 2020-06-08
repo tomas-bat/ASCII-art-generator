@@ -3,6 +3,7 @@
  * @date 30/04/2020
  */
 
+#include <fstream>
 #include "Interface.hpp"
 
 using namespace std;
@@ -72,4 +73,13 @@ size_t Interface::get_num() {
 
     }
     return num;
+}
+
+Interface& Interface::read_file(const string& path) {
+    ifstream file(path, ios::binary);
+    if (!file)
+        throw runtime_error("Unable to read file.");
+    if (!(m_Out << file.rdbuf()))
+        throw runtime_error("Unexpected error when printing output.");
+    return *this;
 }

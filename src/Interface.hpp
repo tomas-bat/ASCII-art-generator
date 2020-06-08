@@ -78,6 +78,14 @@ public:
     Interface& end_line();
 
     /**
+     * Prints the whole file into the output stream.
+     *
+     * @param path  Path to the file.
+     * @return      This interface.
+     */
+    Interface& read_file(const std::string& path);
+
+    /**
      * This method prints any given string into the output.
      *
      * @param str[in]   The string we want to print out.

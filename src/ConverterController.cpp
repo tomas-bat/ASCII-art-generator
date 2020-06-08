@@ -7,6 +7,9 @@
 #include <fstream>
 #include <png.h>
 #include <jpeglib.h>
+#include <sys/ioctl.h>
+#include <cstdio>
+#include <unistd.h>
 #include "ConverterController.hpp"
 #include "ImageJPG.hpp"
 #include "ImagePNG.hpp"
@@ -27,9 +30,9 @@ Command back_converter() {
     };
 }
 
-Command how_to() {
+Command how_to_converter() {
     return Command{
-        "Shows how to convert images.",
+        "Shows help how to convert images.",
      [] (Interface& interface) {
             interface.print("First, you have to specify the folder in which the program will search for images "
                             "using command \"folder\", for example \"/home/users/john/imgs\".\n"
@@ -40,7 +43,9 @@ Command how_to() {
                             "it's original dimensions.\n"
                             "If you are displaying ASCII images in a dark terminal, it's recommended "
                             "to use \"invert true\", which will invert the ASCII conversion. You can then "
-                            "set it back using \"invert false\".")
+                            "set it back using \"invert false\".\n"
+                            "If you want to load a custom ASCII transition from a file, use \"custom\" and then"
+                            "enter the file location.")
                      .end_line();
             return 1;
         }
@@ -57,6 +62,22 @@ Command width(size_t& max_width) {
                          .end_line();
             }
             max_width = input_num;
+            interface.print("Maximum ASCII image width will now be ")
+                     .print(to_string(max_width))
+                     .print(" characters.")
+                     .end_line();
+            return 1;
+        }
+    };
+}
+
+Command match(size_t& max_width) {
+    return Command{
+        "Sets the maximum width to the width of user's terminal window.",
+        [&max_width] (Interface& interface) {
+            struct winsize w{};
+            ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+            max_width = w.ws_col;
             interface.print("Maximum ASCII image width will now be ")
                      .print(to_string(max_width))
                      .print(" characters.")
@@ -293,7 +314,7 @@ Command reset(vector<unique_ptr<Image>>& images, vector<string>& valid_images,
 
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());
-    m_Commands.emplace("howto", how_to());
+    m_Commands.emplace("howto", how_to_converter());
     m_Commands.emplace("folder", folder(m_Folder_location, m_Valid_images, m_Images));
     m_Commands.emplace("convert", convert(m_Folder_location, m_Valid_images, m_Images,
                                           m_Max_width, m_Invert, m_ASCII_transition, m_ASCII_transition_inverted));
@@ -302,6 +323,7 @@ ConverterController::ConverterController(const Interface& interface) : Controlle
     m_Commands.emplace("custom", custom(m_ASCII_transition, m_ASCII_transition_inverted));
     m_Commands.emplace("reset", reset(m_Images, m_Valid_images, m_Folder_location, m_ASCII_transition,
                                       m_ASCII_transition_inverted, m_Max_width, m_Invert));
+    m_Commands.emplace("match", match(m_Max_width));
 
     m_Welcome = "[ You're in the converter: ]\n";
 }

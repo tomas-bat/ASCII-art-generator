@@ -5,6 +5,7 @@
  */
 #pragma once
 
+#include <vector>
 #include "Controller.hpp"
 
 
@@ -32,7 +33,6 @@ public:
     AnimatorController& operator= (const AnimatorController&) = delete;
 
 private:
-    std::string m_Folder_location;
-    int m_Valid_images = 0;
+    std::vector<std::string> m_Images;
 };
 
