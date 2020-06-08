@@ -38,7 +38,7 @@ Command how_to_animator() {
     };
 }
 
-Command folder(vector<string>& images) {
+Command folder(map<int, string>& images) {
     return Command{
         "Specify the folder with images.",
         [&images] (Interface& interface) {
@@ -58,12 +58,13 @@ Command folder(vector<string>& images) {
             }
             images.clear();
 
+            int k = 0;
             for (const auto& file : fs::directory_iterator(path)) {
                 if (file.path().extension() == ".txt") {
                     interface.print("Found ")
                              .print(file.path().filename())
                              .end_line();
-                    images.push_back(file.path());
+                    images.emplace(++k, file.path());
                 }
             }
 
@@ -78,7 +79,72 @@ Command folder(vector<string>& images) {
     };
 }
 
-Command show(const vector<string>& images) {
+Command positions(map<int, string>& images) {
+    return Command{
+        "Shows current positions of images in the animation.",
+        [&images] (Interface& interface) {
+
+            if (images.empty()) {
+                interface.print("You have to specify the folder with valid images.")
+                        .end_line();
+                return 2;
+            }
+
+            for (const auto& image : images) {
+                interface.print(to_string(image.first))
+                         .print(": ")
+                         .print(image.second)
+                         .end_line();
+            }
+
+            return 1;
+        }
+    };
+}
+
+Command swap(map<int, string>& images) {
+    return Command{
+        "Swaps images in the animation.",
+        [&images] (Interface& interface) {
+
+            int num_1, num_2;
+            try {
+                num_1 = interface.get_int();
+                num_2 = interface.get_int();
+            }
+            catch (const invalid_argument& except) {
+                interface.print("Wrong input.")
+                         .end_line()
+                         .clear_line();
+                return 2;
+            }
+
+            if (images.empty()) {
+                interface.print("You have to specify the folder with valid images.")
+                         .end_line();
+                return 2;
+            }
+
+            if (   num_1 < 1 || num_1 > (int)images.size()
+                || num_2 < 1 || num_2 > (int)images.size())
+            {
+                interface.print("Positions must be 1 - ")
+                         .print(to_string(images.size()))
+                         .end_line();
+                return 2;
+
+            }
+
+            string& img1 = images[num_1];
+            string& img2 = images[num_2];
+            swap(img1, img2);
+
+            return 1;
+        }
+    };
+}
+
+Command show(const map<int, string>& images) {
     return Command{
         "Show the animation.",
         [&images] (Interface& interface) {
@@ -91,7 +157,7 @@ Command show(const vector<string>& images) {
 
             for (const auto& image : images) {
                 system("clear");
-                interface.read_file(image);
+                interface.read_file(image.second);
                 this_thread::sleep_for(chrono::seconds(1));
             }
 
@@ -105,6 +171,8 @@ AnimatorController::AnimatorController(const Interface& interface) : Controller(
     m_Commands.emplace("folder", folder(m_Images));
     m_Commands.emplace("show", show(m_Images));
     m_Commands.emplace("howto", how_to_animator());
+    m_Commands.emplace("positions", positions(m_Images));
+    m_Commands.emplace("swap", swap(m_Images));
 
     m_Welcome = "[ You're in the animator: ]\n";
 }

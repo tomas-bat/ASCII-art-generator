@@ -67,11 +67,8 @@ std::string Interface::get_string() {
 
 size_t Interface::get_num() {
     size_t num;
-    if (!(m_In >> num)) {
-        if (!(m_Out << "Wrong input." << endl))
-            throw runtime_error("Unable to print output.");
-
-    }
+    if (!(m_In >> num))
+        throw invalid_argument("Wrong input.");
     return num;
 }
 
@@ -81,5 +78,21 @@ Interface& Interface::read_file(const string& path) {
         throw runtime_error("Unable to read file.");
     if (!(m_Out << file.rdbuf()))
         throw runtime_error("Unexpected error when printing output.");
+    return *this;
+}
+
+int Interface::get_int() {
+    int num;
+    if (!(m_In >> num))
+        throw invalid_argument("Wrong input.");
+    return num;
+}
+
+/**
+ * @note This whole function taken from https://gitlab.fit.cvut.cz/bernhdav/pa2-minesweeper/
+ */
+Interface& Interface::clear_line() {
+    m_In.clear();
+    m_In.ignore(numeric_limits<streamsize>::max(), '\n');
     return *this;
 }

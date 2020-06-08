@@ -65,6 +65,7 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 
 - `howto` zobrazí nápovědu, jak konvertovat obrázky
 - `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
+- `match` nastaví maximální šířku (ve znacích) pro konvertované obrázky podle šířky terminálu
 - `width <num>` nastaví maximální šířku (ve znacích) pro konvertované obrázky, 0 ponechá původní velikosti
 (výchozí nastavení)
 - `invert true` nastaví inverzi konvertovaných obrázků, doporučeno pro tmavý terminál
@@ -76,6 +77,8 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 
 V podprogramu pro zobrazení animace:
 - `howto` zobrazí nápovědu, jak zobrazovat animaci
+- `positions` zobrazí současnou pozici obrázků v animaci
+- `swap <num> <num>` prohodí pořadí dvou zadaných obrázků v animaci
 - `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
 - `show` zobrazí animaci
 - `back` se vrátí zpět do menu programu

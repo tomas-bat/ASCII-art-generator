@@ -6,6 +6,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include "Controller.hpp"
 
 
@@ -33,6 +34,6 @@ public:
     AnimatorController& operator= (const AnimatorController&) = delete;
 
 private:
-    std::vector<std::string> m_Images;
+    std::map<int, std::string> m_Images;
 };
 

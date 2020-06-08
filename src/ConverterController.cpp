@@ -56,7 +56,16 @@ Command width(size_t& max_width) {
     return Command{
         "Sets the maximum width of the converted image.",
         [&max_width] (Interface& interface) {
-            size_t input_num = interface.get_num();
+            size_t input_num;
+            try {
+                input_num = interface.get_num();
+            }
+            catch (const invalid_argument& except) {
+                interface.print("Wrong input.")
+                         .end_line()
+                         .clear_line();
+                return 2;
+            }
             if (input_num == 0) {
                 interface.print("Images will keep their original dimensions.")
                          .end_line();

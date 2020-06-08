@@ -56,6 +56,13 @@ public:
     size_t get_num();
 
     /**
+     * This method will read an int number from the input stream.
+     *
+     * @return The input number.
+     */
+    int get_int();
+
+    /**
      * This method will read any string from the input stream.
      *
      * @return The input string;
@@ -91,6 +98,13 @@ public:
      * @param str[in]   The string we want to print out.
      */
     Interface& print(const std::string& str);
+
+    /**
+     * This method clears the input line in order to avoid infinite looping on wrong input.
+     *
+     * @note Funtion taken from https://gitlab.fit.cvut.cz/bernhdav/pa2-minesweeper/
+     */
+    Interface& clear_line();
 
 private:
     std::istream& m_In;
