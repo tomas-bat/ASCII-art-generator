@@ -10,6 +10,7 @@
 #include <sys/ioctl.h>
 #include <cstdio>
 #include <unistd.h>
+#include "Global.hpp"
 #include "ConverterController.hpp"
 #include "ImageJPG.hpp"
 #include "ImagePNG.hpp"
@@ -223,20 +224,9 @@ Command convert(const string& folder_location, vector<string>& valid_images,
                 fs::create_directory(folder_location + "/converted");
 
                 // Get the path where the new image will be saved to:
-                string save_path = folder_location + "/converted/" + image->get_name() + ".txt";
+                string save_path = folder_location + "/converted/" + image->get_name() + ".ascii";
 
-                // Create the output file:
-                ofstream out_file(save_path, ios::binary);
-                if (!out_file)
-                    throw runtime_error("File cannot be written.");
-
-                // Save the ASCII-art image to the output file:
-                for (size_t i = 0; i < ascii_image.get_height(); i++) {
-                    if (!(out_file << ascii_image[i]))
-                        throw runtime_error("Unexpected error when writing output.");
-                    if (!(out_file << endl))
-                        throw runtime_error("Unexpected error when writing output.");
-                }
+                ascii_image.save(save_path);
 
                 interface.print("Converted to: ")
                          .print(save_path)
@@ -326,12 +316,12 @@ ConverterController::ConverterController(const Interface& interface) : Controlle
     m_Commands.emplace("howto", how_to_converter());
     m_Commands.emplace("folder", folder(m_Folder_location, m_Valid_images, m_Images));
     m_Commands.emplace("convert", convert(m_Folder_location, m_Valid_images, m_Images,
-                                          m_Max_width, m_Invert, m_ASCII_transition, m_ASCII_transition_inverted));
+                                          m_Max_width, glob_inverted, glob_ASCII_transition, glob_ASCII_transition_inverted));
     m_Commands.emplace("width", width(m_Max_width));
-    m_Commands.emplace("invert", invert(m_Invert));
-    m_Commands.emplace("custom", custom(m_ASCII_transition, m_ASCII_transition_inverted));
-    m_Commands.emplace("reset", reset(m_Images, m_Valid_images, m_Folder_location, m_ASCII_transition,
-                                      m_ASCII_transition_inverted, m_Max_width, m_Invert));
+    m_Commands.emplace("invert", invert(glob_inverted));
+    m_Commands.emplace("custom", custom(glob_ASCII_transition, glob_ASCII_transition_inverted));
+    m_Commands.emplace("reset", reset(m_Images, m_Valid_images, m_Folder_location, glob_ASCII_transition,
+                                     glob_ASCII_transition_inverted, m_Max_width, glob_inverted));
     m_Commands.emplace("match", match(m_Max_width));
 
     m_Welcome = "[ You're in the converter: ]\n";

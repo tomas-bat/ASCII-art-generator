@@ -61,7 +61,7 @@ Command folder(map<int, string>& images) {
 
             int k = 0;
             for (const auto& file : fs::directory_iterator(path)) {
-                if (file.path().extension() == ".txt") {
+                if (file.path().extension() == ".ascii") {
                     interface.print("Found ")
                              .print(file.path().filename())
                              .end_line();
@@ -94,7 +94,7 @@ Command positions(map<int, string>& images) {
             for (const auto& image : images) {
                 interface.print(to_string(image.first))
                          .print(": ")
-                         .print(image.second)
+                         .print(fs::path(image.second).filename())
                          .end_line();
             }
 

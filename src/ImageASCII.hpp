@@ -22,6 +22,13 @@ public:
     ImageASCII(size_t height, size_t width);
 
     /**
+     * Constructor of ImageASCII from a file.
+     *
+     * @param file_path Path to the file.
+     */
+    explicit ImageASCII(const std::string& file_path);
+
+    /**
      * A method to set a character of the ASCII-art image.
      *
      * @param height Position of the character.
@@ -45,6 +52,15 @@ public:
      * @return The image height.
      */
     size_t get_height() const { return m_Height; }
+
+    char& at(size_t h, size_t w) { return m_Data[h][w]; }
+
+    /**
+     * Method to save ASCII image to a file.
+     *
+     * @param path  File path.
+     */
+    void save(const std::string& path);
 
 private:
     std::vector<std::string> m_Data;

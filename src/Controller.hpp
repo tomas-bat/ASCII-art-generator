@@ -6,6 +6,7 @@
 
 #include <map>
 #include <utility>
+#include <string>
 #include "Command.hpp"
 #include "Interface.hpp"
 

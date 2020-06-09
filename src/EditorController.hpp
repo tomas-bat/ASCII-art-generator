@@ -30,7 +30,7 @@ public:
     EditorController& operator= (const EditorController&) = delete;
 
 private:
-    std::string m_Folder_location;
+    std::string m_File_location;
     int m_Valid_images = 0;
 };
 

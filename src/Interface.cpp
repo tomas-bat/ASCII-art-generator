@@ -78,6 +78,7 @@ Interface& Interface::read_file(const string& path) {
         throw runtime_error("Unable to read file.");
     if (!(m_Out << file.rdbuf()))
         throw runtime_error("Unexpected error when printing output.");
+    file.close();
     return *this;
 }
 
