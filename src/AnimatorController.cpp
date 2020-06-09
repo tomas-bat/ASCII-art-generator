@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <chrono>
 #include <thread>
+#include <cmath>
 #include "AnimatorController.hpp"
 
 #ifdef __APPLE__
@@ -144,10 +145,10 @@ Command swap(map<int, string>& images) {
     };
 }
 
-Command show(const map<int, string>& images) {
+Command show(const map<int, string>& images, const int& fps) {
     return Command{
         "Show the animation.",
-        [&images] (Interface& interface) {
+        [&images, &fps] (Interface& interface) {
 
             if (images.empty()) {
                 interface.print("You have to specify the folder with valid images.")
@@ -155,11 +156,39 @@ Command show(const map<int, string>& images) {
                 return 2;
             }
 
+            int milisec = floor(1.0/(fps * 1.0) * 1000);
+
             for (const auto& image : images) {
                 system("clear");
                 interface.read_file(image.second);
-                this_thread::sleep_for(chrono::seconds(1));
+                this_thread::sleep_for(chrono::milliseconds(milisec));
             }
+
+            return 1;
+        }
+    };
+}
+
+Command fps(int& fps) {
+    return Command{
+        "Sets the framerate of the animation.",
+        [&fps] (Interface& interface) {
+
+            int num;
+            try {
+                num = interface.get_int();
+            }
+            catch (const invalid_argument& except) {
+                interface.print("Wrong input.")
+                         .end_line();
+                return 2;
+            }
+            if (num < 1) {
+                interface.print("FPS must be 1 or more.")
+                         .end_line();
+                return 2;
+            }
+            fps = num;
 
             return 1;
         }
@@ -169,10 +198,11 @@ Command show(const map<int, string>& images) {
 AnimatorController::AnimatorController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_animator());
     m_Commands.emplace("folder", folder(m_Images));
-    m_Commands.emplace("show", show(m_Images));
+    m_Commands.emplace("show", show(m_Images, m_Fps));
     m_Commands.emplace("howto", how_to_animator());
     m_Commands.emplace("positions", positions(m_Images));
     m_Commands.emplace("swap", swap(m_Images));
+    m_Commands.emplace("fps", fps(m_Fps));
 
     m_Welcome = "[ You're in the animator: ]\n";
 }

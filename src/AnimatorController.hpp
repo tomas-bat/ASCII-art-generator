@@ -35,5 +35,6 @@ public:
 
 private:
     std::map<int, std::string> m_Images;
+    int m_Fps = 1;
 };
 

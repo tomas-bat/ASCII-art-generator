@@ -80,6 +80,7 @@ V podprogramu pro zobrazení animace:
 - `positions` zobrazí současnou pozici obrázků v animaci
 - `swap <num> <num>` prohodí pořadí dvou zadaných obrázků v animaci
 - `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
+- `fps <num>` nastaví framerate animace
 - `show` zobrazí animaci
 - `back` se vrátí zpět do menu programu
 
