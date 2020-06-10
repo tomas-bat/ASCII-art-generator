@@ -37,11 +37,14 @@ Command how_to_converter() {
      [] (Interface& interface) {
             interface.print("First, you have to specify the folder in which the program will search for images "
                             "using command \"folder\", for example \"/home/users/john/imgs\".\n"
+                            "Then, you have to tell the program to load all images from this folder using command "
+                            "\"load\".\n"
                             "After that, enter the command \"convert\" and a folder with converted images "
                             "will be saved in the folder you have entered before.\n"
                             "You can also set the maximum image width using command \"width <num>\". "
                             "If not specified or if you enter 0, the converted image will keep\n"
-                            "it's original dimensions.\n"
+                            "it's original dimensions. Command \"match\" will set the width to the width of your "
+                            "terminal.\n"
                             "If you are displaying ASCII images in a dark terminal, it's recommended "
                             "to use \"invert true\", which will invert the ASCII conversion. You can then "
                             "set it back using \"invert false\".\n"
@@ -70,6 +73,7 @@ Command width(size_t& max_width) {
             if (input_num == 0) {
                 interface.print("Images will keep their original dimensions.")
                          .end_line();
+                return 1;
             }
             max_width = input_num;
             interface.print("Maximum ASCII image width will now be ")
@@ -144,47 +148,38 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
             .end_line();
 }
 
-Command folder(string& folder_location, vector<string>& valid_files,
-               vector<unique_ptr<Image>>& images) {
+Command load(vector<unique_ptr<Image>>& images, vector<string>& valid_images, const string& path) {
     return Command{
-        "Specify the folder with images.",
-        [&folder_location, &valid_files, &images] (Interface& interface) {
-            string path = interface.get_path("folder");
-            if (interface.eof() || path.empty())
-                return 2;
+        "Loads images from the given folder.",
+        [&images, &valid_images, &path] (Interface& interface) {
 
-            // Check if it's a valid directory:
-            try {
-                fs::current_path(path);
-            }
-            catch (const fs::filesystem_error& except) {
-                interface.print(except.what())
+            if (glob_folder_location.empty()) {
+                interface.print("You have to specify a folder in the main menu.")
                          .end_line();
                 return 2;
             }
-            folder_location = path;
 
-            valid_files.clear();
+            valid_images.clear();
             images.clear();
 
             // Find supported formats:
             for (const auto& file : fs::directory_iterator(path)) {
                 string extension = file.path().extension();
                 if (   extension == ".png"
-                    || extension == ".PNG"
-                    || extension == ".jpg"
-                    || extension == ".JPG"
-                    || extension == ".jpeg"
-                    || extension == ".JPEG")
+                       || extension == ".PNG"
+                       || extension == ".jpg"
+                       || extension == ".JPG"
+                       || extension == ".jpeg"
+                       || extension == ".JPEG")
                 {
                     interface.print("Found: ")
-                             .print(file.path().filename())
-                             .end_line();
-                    valid_files.push_back(file.path());
+                            .print(file.path().filename())
+                            .end_line();
+                    valid_images.push_back(file.path());
                 }
             }
             // Load images from folder to m_Images:
-            load_images(images, valid_files, interface);
+            load_images(images, valid_images, interface);
             return 1;
         }
     };
@@ -198,12 +193,12 @@ Command convert(const string& folder_location, vector<string>& valid_images,
         [&folder_location, &valid_images, &images, &max_width, &invert,
          &transition, &inverted] (Interface& interface) {
             if (folder_location.empty()) {
-                interface.print("You have to specify the folder first.")
+                interface.print("No images have been loaded.")
                          .end_line();
                 return 2;
             }
             if (valid_images.empty()) {
-                interface.print("No valid images have been found.")
+                interface.print("No valid images loaded.")
                          .end_line();
                 return 2;
             }
@@ -231,6 +226,9 @@ Command convert(const string& folder_location, vector<string>& valid_images,
                 interface.print("Converted to: ")
                          .print(save_path)
                          .end_line();
+
+                // Set the global variable showing that images have already been converted:
+                glob_converted = true;
             }
             return 1;
         }
@@ -314,13 +312,13 @@ Command reset(vector<unique_ptr<Image>>& images, vector<string>& valid_images,
 ConverterController::ConverterController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_converter());
     m_Commands.emplace("howto", how_to_converter());
-    m_Commands.emplace("folder", folder(m_Folder_location, m_Valid_images, m_Images));
-    m_Commands.emplace("convert", convert(m_Folder_location, m_Valid_images, m_Images,
+    m_Commands.emplace("load", load(m_Images, m_Valid_images, glob_folder_location));
+    m_Commands.emplace("convert", convert(glob_folder_location, m_Valid_images, m_Images,
                                           m_Max_width, glob_inverted, glob_ASCII_transition, glob_ASCII_transition_inverted));
     m_Commands.emplace("width", width(m_Max_width));
     m_Commands.emplace("invert", invert(glob_inverted));
     m_Commands.emplace("custom", custom(glob_ASCII_transition, glob_ASCII_transition_inverted));
-    m_Commands.emplace("reset", reset(m_Images, m_Valid_images, m_Folder_location, glob_ASCII_transition,
+    m_Commands.emplace("reset", reset(m_Images, m_Valid_images, glob_folder_location, glob_ASCII_transition,
                                      glob_ASCII_transition_inverted, m_Max_width, glob_inverted));
     m_Commands.emplace("match", match(m_Max_width));
 

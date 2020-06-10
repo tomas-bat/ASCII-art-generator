@@ -42,6 +42,7 @@ Kde lze využít polymorfismus? (doporučené)
 
 ## Zadání programu ASCII-art generator
 Program uživatel spustí a pomocí příkazů do konzole ho bude ovládat.
+- `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
 - `converter` spustí podprogram pro koverzi obrázků do ASCII-artu
 - `animator` spustí podprogram, který zobrazí animaci z několika obrázků v ASCII-artu
 - `editor` spustí podprogram pro jednoduchou editaci ASCII-art obrázků
@@ -64,7 +65,7 @@ Pokud formát obrázku podporuje průhlednost, tak budou všechny zcela průhled
 na bílou nebo černou podle toho, jak je nastavena inverze.
 
 - `howto` zobrazí nápovědu, jak konvertovat obrázky
-- `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
+- `load` načte obrázky ze zadané složky
 - `match` nastaví maximální šířku (ve znacích) pro konvertované obrázky podle šířky terminálu
 - `width <num>` nastaví maximální šířku (ve znacích) pro konvertované obrázky, 0 ponechá původní velikosti
 (výchozí nastavení)
@@ -77,16 +78,17 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 
 V podprogramu pro zobrazení animace:
 - `howto` zobrazí nápovědu, jak zobrazovat animaci
+- `load` načte obrázky ze složky converted/
 - `positions` zobrazí současnou pozici obrázků v animaci
 - `swap <num> <num>` prohodí pořadí dvou zadaných obrázků v animaci
-- `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
 - `fps <num>` nastaví framerate animace
 - `show` zobrazí animaci
 - `back` se vrátí zpět do menu programu
 
 V podprogramu pro jednoduchou editaci ASCII-art obrázků:
 - `howto` zobrazí nápovědu, jak upravovat obrázek
-- `location` se dotáže na umístění obrázku
+- `images` zobrazí obrázky, které jdou načíst
+- `load <filename>` načte daný obrázek
 - `show` zobrazí obrázek
 - `brighten` obrázek zesvětlí
 - `darken` obrázek ztmaví

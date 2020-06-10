@@ -25,15 +25,49 @@ Command back_editor() {
     };
 }
 
-Command location(string& filename) {
+Command images() {
     return Command{
-        "Specify the image location.",
+        "Shows the images you can load.",
+        [] (Interface& interface) {
+            if (!glob_converted) {
+                interface.print("You haven't converted any images.")
+                         .end_line();
+                return 2;
+            }
+            interface.print("You can load any of the following images:")
+                     .end_line();
+            try {
+                for (const auto& file : fs::directory_iterator(glob_folder_location + "/converted/")) {
+                    interface.print(file.path().filename())
+                            .end_line();
+                }
+            }
+            catch (const fs::filesystem_error& except) {
+                interface.print("Error: No such folder \"converted\" in the given folder. ")
+                         .print("Did you change the folder after converting?")
+                         .end_line();
+                return 2;
+            }
+            return 1;
+        }
+    };
+}
+
+Command load(string& filename) {
+    return Command{
+        "Loads the specified image.",
         [&filename] (Interface& interface) {
-            string path = interface.get_path("file");
+            string path = interface.get_string();
             if (interface.eof() || path.empty())
                 return 2;
 
-            fstream file(path);
+            if (!glob_converted) {
+                interface.print("You have to convert the images before you can edit them.")
+                         .end_line();
+                return 2;
+            }
+
+            fstream file(glob_folder_location + "/converted/" + path);
             if (!file) {
                 interface.print("Unable to open such file.")
                          .end_line();
@@ -60,13 +94,20 @@ Command show_img(const string& filename) {
         [&filename] (Interface& interface) {
 
             if (filename.empty()) {
-                interface.print("You have to specify a valid ASCII image location.")
+                interface.print("No image loaded.")
                          .end_line();
                 return 2;
             }
 
             system("clear");
-            interface.read_file(filename);
+            try {
+                interface.read_file(glob_folder_location + "/converted/" + filename);
+            }
+            catch (const runtime_error& except) {
+                interface.print(except.what())
+                         .end_line();
+                return 2;
+            }
             return 1;
         }
     };
@@ -86,7 +127,12 @@ Command brighten(const string& filename) {
     return Command{
         "Brightens the ASCII image.",
         [&filename] (Interface& interface) {
-            ImageASCII ascii_image(filename);
+            if (filename.empty()) {
+                interface.print("No image loaded.")
+                         .end_line();
+                return 2;
+            }
+            ImageASCII ascii_image(glob_folder_location + "/converted/" + filename);
             for (size_t i = 0; i < ascii_image.get_height(); i++) {
                 for (size_t j = 0; j < ascii_image.get_width(); j++) {
                     char c = ascii_image.at(i, j);
@@ -101,7 +147,7 @@ Command brighten(const string& filename) {
                     ascii_image.at(i, j) = brighten_darken(c, char_set, pos, true);
                 }
             }
-            ascii_image.save(filename);
+            ascii_image.save(glob_folder_location + "/converted/" + filename);
             return 1;
         }
     };
@@ -111,7 +157,12 @@ Command darken(const string& filename) {
     return Command{
             "Darkens the ASCII image.",
             [&filename] (Interface& interface) {
-                ImageASCII ascii_image(filename);
+                if (filename.empty()) {
+                    interface.print("No image loaded.")
+                            .end_line();
+                    return 2;
+                }
+                ImageASCII ascii_image(glob_folder_location + "/converted/" + filename);
                 for (size_t i = 0; i < ascii_image.get_height(); i++) {
                     for (size_t j = 0; j < ascii_image.get_width(); j++) {
                         char c = ascii_image.at(i, j);
@@ -126,7 +177,7 @@ Command darken(const string& filename) {
                         ascii_image.at(i, j) = brighten_darken(c, char_set, pos, false);
                     }
                 }
-                ascii_image.save(filename);
+                ascii_image.save(glob_folder_location + "/converted/" + filename);
                 return 1;
             }
     };
@@ -136,10 +187,11 @@ Command darken(const string& filename) {
 
 EditorController::EditorController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_editor());
-    m_Commands.emplace("location", location(m_File_location));
+    m_Commands.emplace("load", load(m_File_location));
     m_Commands.emplace("show", show_img(m_File_location));
     m_Commands.emplace("brighten", brighten(m_File_location));
     m_Commands.emplace("darken", darken(m_File_location));
+    m_Commands.emplace("images", images());
 
     m_Welcome = "[ You're in the editor: ]\n";
 }

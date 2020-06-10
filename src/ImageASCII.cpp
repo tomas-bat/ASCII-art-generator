@@ -18,7 +18,7 @@ ImageASCII::ImageASCII(size_t height, size_t width) : m_Height(height), m_Width(
 ImageASCII::ImageASCII(const string& file_path) {
     ifstream file(file_path);
     if (!file)
-        throw runtime_error("Unable to read ASCII image file in ASCII image construction.");
+        throw runtime_error("Unable to read ASCII image file in ASCII image construction: \'" + file_path + "\'");
 
     string line;
     size_t height = 0;

@@ -42,7 +42,6 @@ public:
 private:
     std::vector<std::unique_ptr<Image>> m_Images;
     std::vector<std::string> m_Valid_images;
-    std::string m_Folder_location;
     size_t m_Max_width = 0;
 };
 

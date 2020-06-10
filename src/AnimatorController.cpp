@@ -8,6 +8,7 @@
 #include <thread>
 #include <cmath>
 #include "AnimatorController.hpp"
+#include "Global.hpp"
 
 #ifdef __APPLE__
 namespace fs = std::__fs::filesystem;
@@ -28,29 +29,32 @@ Command how_to_animator() {
     return Command{
         "Show help how to show animation.",
         [] (Interface& interface) {
-            interface.print("First, you have to specify the folder in which the program will look for "
-                            "valid ASCII images using command \"folder\".\n"
-                            "It is strongly recommended to get those images using this program's converter, "
-                            "with the width and color matching your terminal (see converter help).\n"
-                            "To show the animation, use \"show\".")
+            interface.print("First, you have to load the images created by the converter using command \"load\".\n"
+                            "It is strongly recommended to convert these images with the width and color "
+                            "matching your terminal (see converter help).\n"
+                            "To show the animation, use \"show\".\n"
+                            "You can view the frame position in the animation using command \"positions\".\n"
+                            "You can also change the frame position using command \"swap <num> <num>\", which "
+                            "will swap the two given frames.")
                      .end_line();
             return 1;
         }
     };
 }
 
-Command folder(map<int, string>& images) {
+Command load(map<int, string>& images) {
     return Command{
-        "Specify the folder with images.",
+        "Loads images from converted folder.",
         [&images] (Interface& interface) {
 
-            string path = interface.get_path("folder");
-            if (interface.eof() || path.empty())
+            if (!glob_converted) {
+                interface.print("You have to convert images before you can show an animation.")
+                        .end_line();
                 return 2;
-
+            }
             // Check if it's a valid directory:
             try {
-                fs::current_path(path);
+                fs::current_path(glob_folder_location + "/converted");
             }
             catch (const fs::filesystem_error& except) {
                 interface.print(except.what())
@@ -60,7 +64,7 @@ Command folder(map<int, string>& images) {
             images.clear();
 
             int k = 0;
-            for (const auto& file : fs::directory_iterator(path)) {
+            for (const auto& file : fs::directory_iterator(glob_folder_location + "/converted")) {
                 if (file.path().extension() == ".ascii") {
                     interface.print("Found ")
                              .print(file.path().filename())
@@ -151,7 +155,7 @@ Command show(const map<int, string>& images, const int& fps) {
         [&images, &fps] (Interface& interface) {
 
             if (images.empty()) {
-                interface.print("You have to specify the folder with valid images.")
+                interface.print("No images loaded.")
                          .end_line();
                 return 2;
             }
@@ -197,7 +201,7 @@ Command fps(int& fps) {
 
 AnimatorController::AnimatorController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_animator());
-    m_Commands.emplace("folder", folder(m_Images));
+    m_Commands.emplace("load", load(m_Images));
     m_Commands.emplace("show", show(m_Images, m_Fps));
     m_Commands.emplace("howto", how_to_animator());
     m_Commands.emplace("positions", positions(m_Images));

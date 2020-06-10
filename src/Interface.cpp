@@ -73,9 +73,9 @@ size_t Interface::get_num() {
 }
 
 Interface& Interface::read_file(const string& path) {
-    ifstream file(path, ios::binary);
+    ifstream file(path);
     if (!file)
-        throw runtime_error("Unable to read file.");
+        throw runtime_error("Unable to read file: " + path);
     if (!(m_Out << file.rdbuf()))
         throw runtime_error("Unexpected error when printing output.");
     file.close();

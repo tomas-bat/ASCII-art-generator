@@ -31,6 +31,5 @@ public:
 
 private:
     std::string m_File_location;
-    int m_Valid_images = 0;
 };
 

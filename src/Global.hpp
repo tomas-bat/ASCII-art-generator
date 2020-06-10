@@ -9,3 +9,5 @@
 extern std::string glob_ASCII_transition;
 extern std::string glob_ASCII_transition_inverted;
 extern bool glob_inverted;
+extern bool glob_converted;
+extern std::string glob_folder_location;
