@@ -1,6 +1,8 @@
 /**
  * @author Tomáš Batěk <batekto2@fit.cvut.cz>
  * @date 08/05/2020
+ *
+ * @note    Some code inspired by libjpeg documentation.
  */
 
 #include <cstdio>
@@ -9,6 +11,17 @@
 #include "ImageJPG.hpp"
 
 using namespace std;
+
+/**
+ * Custom JPEG error handler.
+ * @note Inspired by https://stackoverflow.com/questions/19857766/error-handling-in-libjpeg
+ */
+void jpeg_error(j_common_ptr cinfo) {
+    char jpeg_error_msg[JMSG_LENGTH_MAX];
+    (*(cinfo->err->format_message))(cinfo, jpeg_error_msg);
+    jpeg_destroy_decompress(reinterpret_cast<j_decompress_ptr>(&cinfo));
+    throw runtime_error(jpeg_error_msg);
+}
 
 ImageRGB ImageJPG::extract(bool invert) const {
 
@@ -26,6 +39,7 @@ ImageRGB ImageJPG::extract(bool invert) const {
     jpeg_error_mgr jerr{};
 
     cinfo.err = jpeg_std_error(&jerr);
+    jerr.error_exit = jpeg_error;
     jpeg_create_decompress(&cinfo);
     jpeg_stdio_src(&cinfo, fp);
     jpeg_read_header(&cinfo, TRUE);

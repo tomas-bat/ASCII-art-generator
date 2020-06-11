@@ -31,7 +31,9 @@ public:
      * This method converts a JPG image into an universal RGB representation.
      *
      * @param invert    This parameter is useless for JPEG, because JPEG doesn't support transparency.
-     * @return The new RGB image.
+     * @return          The new RGB image.
+     *
+     * @note            Inspired by libjpeg documentation.
      */
     ImageRGB extract(bool invert) const override;
 

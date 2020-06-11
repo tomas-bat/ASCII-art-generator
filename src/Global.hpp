@@ -6,6 +6,10 @@
 
 #include <string>
 
+/**
+ * This header file defines global variables used between more Controllers.
+ */
+
 extern std::string glob_ASCII_transition;
 extern std::string glob_ASCII_transition_inverted;
 extern bool glob_inverted;

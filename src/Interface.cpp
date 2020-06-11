@@ -54,7 +54,8 @@ Interface& Interface::print(const string& str) {
 }
 
 Interface& Interface::end_line() {
-    m_Out << endl;
+    if (!(m_Out << endl))
+        throw runtime_error("Unable to print output.");
     return *this;
 }
 

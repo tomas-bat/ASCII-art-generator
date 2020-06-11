@@ -7,6 +7,7 @@
 #include <fstream>
 #include <png.h>
 #include <jpeglib.h>
+#include <algorithm>
 #include <sys/ioctl.h>
 #include <cstdio>
 #include <unistd.h>
@@ -148,6 +149,13 @@ void load_images(vector<unique_ptr<Image>>& images, vector<string>& valid_images
             .end_line();
 }
 
+bool valid_extension(string& ext) {
+    transform(ext.begin(), ext.end(), ext.begin(), ::toupper);
+    return (   ext == ".PNG"
+            || ext == ".JPEG"
+            || ext == ".JPG");
+}
+
 Command load(vector<unique_ptr<Image>>& images, vector<string>& valid_images, const string& path) {
     return Command{
         "Loads images from the given folder.",
@@ -165,13 +173,7 @@ Command load(vector<unique_ptr<Image>>& images, vector<string>& valid_images, co
             // Find supported formats:
             for (const auto& file : fs::directory_iterator(path)) {
                 string extension = file.path().extension();
-                if (   extension == ".png"
-                       || extension == ".PNG"
-                       || extension == ".jpg"
-                       || extension == ".JPG"
-                       || extension == ".jpeg"
-                       || extension == ".JPEG")
-                {
+                if (valid_extension(extension)) {
                     interface.print("Found: ")
                             .print(file.path().filename())
                             .end_line();
@@ -209,80 +211,35 @@ Command convert(const string& folder_location, vector<string>& valid_images,
                          .print(image->get_name())
                          .print("...")
                          .end_line();
-                // Convert the image to a local RGB variable:
-                ImageRGB rgb_image = image->extract(invert);
 
-                // Convert the RGB image to an ASCII image:
-                ImageASCII ascii_image = rgb_image.to_ascii(max_width, invert, transition, inverted);
+                try {
+                    // Convert the image to a local RGB variable:
+                    ImageRGB rgb_image = image->extract(invert);
 
-                // Create folder converted/:
-                fs::create_directory(folder_location + "/converted");
+                    // Convert the RGB image to an ASCII image:
+                    ImageASCII ascii_image = rgb_image.to_ascii(max_width, invert, transition, inverted);
 
-                // Get the path where the new image will be saved to:
-                string save_path = folder_location + "/converted/" + image->get_name() + ".ascii";
+                    // Create folder converted/:
+                    fs::create_directory(folder_location + "/converted");
 
-                ascii_image.save(save_path);
+                    // Get the path where the new image will be saved to:
+                    string save_path = folder_location + "/converted/" + image->get_name() + ".ascii";
 
-                interface.print("Converted to: ")
-                         .print(save_path)
-                         .end_line();
+                    ascii_image.save(save_path);
 
-                // Set the global variable showing that images have already been converted:
-                glob_converted = true;
+                    interface.print("Converted to: ")
+                            .print(save_path)
+                            .end_line();
+
+                    // Set the global variable showing that images have already been converted:
+                    glob_converted = true;
+                }
+                catch (const exception& except) {
+                    interface.print("Error during image conversion: ")
+                             .print(except.what())
+                             .end_line();
+                }
             }
-            return 1;
-        }
-    };
-}
-
-Command invert(bool& inverted){
-    return Command{
-        "Sets whether the ASCII image converts inverted or not.",
-        [&inverted] (Interface& interface) {
-            string input = interface.get_string();
-            if (input == "true") {
-                inverted = true;
-                interface.print("Conversion set for a dark terminal.")
-                         .end_line();
-            }
-            else if (input == "false") {
-                inverted = false;
-                interface.print("Conversion set for a white terminal.")
-                        .end_line();
-            }
-            else {
-                interface.print(R"(Inverted must be "true" or "false".)")
-                         .end_line();
-                return 2;
-            }
-            return 1;
-        }
-    };
-}
-
-Command custom(string& m_Transition, string& m_Transition_inverted) {
-    return Command{
-        "Loads a custom ASCII transitiom from a file.",
-        [&m_Transition, &m_Transition_inverted] (Interface& interface) {
-            string path = interface.get_path("file");
-            ifstream file(path, ios::binary);
-            if (!file) {
-                interface.print("Couldn't open such file.")
-                         .end_line();
-                return 2;
-            }
-            string transition;
-            getline(file, transition);
-            if (transition.empty()) {
-                interface.print("No characters found.")
-                         .end_line();
-                return 2;
-            }
-            m_Transition = transition;
-            reverse(transition.begin(), transition.end());
-            m_Transition_inverted = transition;
-            interface.print("Custom characters loaded.")
-                     .end_line();
             return 1;
         }
     };
@@ -316,8 +273,6 @@ ConverterController::ConverterController(const Interface& interface) : Controlle
     m_Commands.emplace("convert", convert(glob_folder_location, m_Valid_images, m_Images,
                                           m_Max_width, glob_inverted, glob_ASCII_transition, glob_ASCII_transition_inverted));
     m_Commands.emplace("width", width(m_Max_width));
-    m_Commands.emplace("invert", invert(glob_inverted));
-    m_Commands.emplace("custom", custom(glob_ASCII_transition, glob_ASCII_transition_inverted));
     m_Commands.emplace("reset", reset(m_Images, m_Valid_images, glob_folder_location, glob_ASCII_transition,
                                      glob_ASCII_transition_inverted, m_Max_width, glob_inverted));
     m_Commands.emplace("match", match(m_Max_width));

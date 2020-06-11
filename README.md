@@ -43,6 +43,9 @@ Kde lze využít polymorfismus? (doporučené)
 ## Zadání programu ASCII-art generator
 Program uživatel spustí a pomocí příkazů do konzole ho bude ovládat.
 - `folder` se dotáže na umístění složky, odkud se obrázky budou načítat
+- `invert true` nastaví inverzi obrázků, doporučeno pro tmavý terminál
+- `invert false` zruší inverzi obrázků (výchozí nastavení), doporučeno pro světlý terminál
+- `custom` se dotáže na umístění souboru, odkud má program načíst vlastní ASCII přechod
 - `converter` spustí podprogram pro koverzi obrázků do ASCII-artu
 - `animator` spustí podprogram, který zobrazí animaci z několika obrázků v ASCII-artu
 - `editor` spustí podprogram pro jednoduchou editaci ASCII-art obrázků
@@ -69,9 +72,6 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 - `match` nastaví maximální šířku (ve znacích) pro konvertované obrázky podle šířky terminálu
 - `width <num>` nastaví maximální šířku (ve znacích) pro konvertované obrázky, 0 ponechá původní velikosti
 (výchozí nastavení)
-- `invert true` nastaví inverzi konvertovaných obrázků, doporučeno pro tmavý terminál
-- `invert false` zruší inverzi konvertovaných obrázků (výchozí nastavení), doporučeno pro světlý terminál
-- `custom` se dotáže na umístění souboru, odkud má program načíst vlastní ASCII přechod
 - `reset` obnoví všechna nastevní do výchozí hodnoty
 - `convert` vytvoří v zadané složce podsložku s konvertovanými obrázky 
 - `back` se vrátí zpět do menu programu

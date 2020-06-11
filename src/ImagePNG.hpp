@@ -29,7 +29,9 @@ public:
      * This method converts a PNG image into an universal RGB image representation.
      *
      * @param invert    This parameter sets whether fully transparent pixels will be set to black or white.
-     * @return The new RGB image.
+     * @return          The new RGB image.
+     *
+     * @note            Inspired by libpng documentation.
      */
     ImageRGB extract(bool invert) const override;
 

@@ -2,7 +2,7 @@
  * @author Tomáš Batěk <batekto2@fit.cvut.cz>
  * @date 08/05/2020
  *
- * @note Some methods nspired by libpng documentation http://www.libpng.org/pub/png/libpng-1.4.0-manual.pdf
+ * @note    Some code inspired by libpng documentation.
  */
 
 #include <png.h>
@@ -11,6 +11,20 @@
 
 using namespace std;
 
+// Creating global info pointers, so that they can be freed in error functions, which is necessary,
+// because png error/warning functions only pass png_ptr
+png_infop info_ptr, end_info;
+
+void user_error_fn(png_structp png_ptr, png_const_charp error_msg) {
+    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+    throw runtime_error(error_msg);
+}
+
+void user_warning_fn(png_structp png_ptr, png_const_charp warning_msg) {
+    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+    throw runtime_error(warning_msg);
+}
+
 ImageRGB ImagePNG::extract(bool invert) const {
 
     // No need to check whether the file has a correct PNG header, that was already checked in ConverterController
@@ -18,14 +32,14 @@ ImageRGB ImagePNG::extract(bool invert) const {
 
     // Check I/O errors:
     if (!fp)
-        throw runtime_error("Unable to read image.");
+        throw runtime_error("Unable to read PNG image:" + m_Path);
 
     // Create library structs for PNG file reading:
-    png_infop info_ptr, end_info;
-    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+    // png_infop info_ptr, end_info;
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, user_error_fn, user_warning_fn);
     if (!png_ptr) {
         fclose(fp);
-        throw runtime_error("Unexpected error when reading a PNG file.");
+        throw runtime_error("Unexpected error when reading a PNG file: " + m_Path);
     }
     info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr) {
@@ -37,7 +51,7 @@ ImageRGB ImagePNG::extract(bool invert) const {
     if (!end_info) {
         png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)nullptr);
         fclose(fp);
-        throw runtime_error("Unexpected error when reading a PNG file.");
+        throw runtime_error("Unexpected error when reading a PNG file: " + m_Path);
     }
 
     // Setting up input code:
@@ -57,7 +71,6 @@ ImageRGB ImagePNG::extract(bool invert) const {
     png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
 
     ImageRGB rgb_image(height, width);
-
 
     bool alpha = (channels_cnt == 4);
     // Read each pixel (3 or 4 channels):

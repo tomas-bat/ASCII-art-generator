@@ -4,6 +4,7 @@
  */
 
 #include <filesystem>
+#include <fstream>
 #include "Global.hpp"
 #include "StartController.hpp"
 #include "ConverterController.hpp"
@@ -108,12 +109,67 @@ Command folder(string& folder_location) {
     };
 }
 
+Command invert(bool& inverted){
+    return Command{
+            "Sets whether the ASCII image converts inverted or not.",
+            [&inverted] (Interface& interface) {
+                string input = interface.get_string();
+                if (input == "true") {
+                    inverted = true;
+                    interface.print("Conversion set for a dark terminal.")
+                            .end_line();
+                }
+                else if (input == "false") {
+                    inverted = false;
+                    interface.print("Conversion set for a white terminal.")
+                            .end_line();
+                }
+                else {
+                    interface.print(R"(Inverted must be "true" or "false".)")
+                            .end_line();
+                    return 2;
+                }
+                return 1;
+            }
+    };
+}
+
+Command custom(string& m_Transition, string& m_Transition_inverted) {
+    return Command{
+            "Loads a custom ASCII transitiom from a file.",
+            [&m_Transition, &m_Transition_inverted] (Interface& interface) {
+                string path = interface.get_path("file");
+                ifstream file(path, ios::binary);
+                if (!file) {
+                    interface.print("Couldn't open such file.")
+                            .end_line();
+                    return 2;
+                }
+                string transition;
+                getline(file, transition);
+                if (transition.empty()) {
+                    interface.print("No characters found.")
+                            .end_line();
+                    return 2;
+                }
+                m_Transition = transition;
+                reverse(transition.begin(), transition.end());
+                m_Transition_inverted = transition;
+                interface.print("Custom characters loaded.")
+                        .end_line();
+                return 1;
+            }
+    };
+}
+
 StartController::StartController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("quit", quit_app());
     m_Commands.emplace("converter", go_to_converter(m_Interface, m_Welcome, m_Commands["help"]));
     m_Commands.emplace("animator", go_to_animator(m_Interface, m_Welcome, m_Commands["help"]));
     m_Commands.emplace("editor", go_to_editor(m_Interface, m_Welcome, m_Commands["help"]));
     m_Commands.emplace("folder", folder(glob_folder_location));
+    m_Commands.emplace("invert", invert(glob_inverted));
+    m_Commands.emplace("custom", custom(glob_ASCII_transition, glob_ASCII_transition_inverted));
 
     // Default transitions:
     glob_ASCII_transition = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
