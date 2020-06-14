@@ -104,6 +104,7 @@ Command folder(string& folder_location) {
                     return 2;
                 }
                 folder_location = path;
+                glob_converted = false;
                 return 1;
             }
     };

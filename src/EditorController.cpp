@@ -123,6 +123,10 @@ char brighten_darken(char c, const string& char_set, size_t pos, bool brighten) 
     return char_set[pos - 1];
 }
 
+char negative_char(const string& char_set, size_t pos) {
+    return char_set[char_set.size() - 1 - pos];
+}
+
 Command brighten(const string& filename) {
     return Command{
         "Brightens the ASCII image.",
@@ -183,6 +187,37 @@ Command darken(const string& filename) {
     };
 }
 
+Command negative(const string& filename) {
+    return Command{
+        "Creates a negative of the ASCII image.",
+        [&filename] (Interface& interface) {
+            if (filename.empty()) {
+                interface.print("No image loaded.")
+                        .end_line();
+                return 2;
+            }
+            ImageASCII ascii_image(glob_folder_location + "/converted/" + filename);
+            for (size_t i = 0; i < ascii_image.get_height(); i++) {
+                for (size_t j = 0; j < ascii_image.get_width(); j++) {
+                    char c = ascii_image.at(i, j);
+                    string& char_set = (glob_inverted ? glob_ASCII_transition_inverted : glob_ASCII_transition);
+                    size_t pos = char_set.find(c);
+                    if (pos == string::npos) {
+                        interface.print("Error when darkening image. Are you sure you have set the correct "
+                                        "character set in the converter?")
+                                .end_line();
+                        return 2;
+                    }
+                    ascii_image.at(i, j) = negative_char(char_set, pos);
+                }
+            }
+            ascii_image.save(glob_folder_location + "/converted/" + filename);
+
+            return 1;
+        }
+    };
+}
+
 // todo: commands
 
 EditorController::EditorController(const Interface& interface) : Controller(interface) {
@@ -192,6 +227,7 @@ EditorController::EditorController(const Interface& interface) : Controller(inte
     m_Commands.emplace("brighten", brighten(m_File_location));
     m_Commands.emplace("darken", darken(m_File_location));
     m_Commands.emplace("images", images());
+    m_Commands.emplace("negative", negative(m_File_location));
 
     m_Welcome = "[ You're in the editor: ]\n";
 }

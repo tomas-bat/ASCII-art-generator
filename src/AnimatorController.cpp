@@ -42,7 +42,7 @@ Command how_to_animator() {
     };
 }
 
-Command load(map<int, string>& images) {
+Command load(vector<string>& images) {
     return Command{
         "Loads images from converted folder.",
         [&images] (Interface& interface) {
@@ -63,15 +63,16 @@ Command load(map<int, string>& images) {
             }
             images.clear();
 
-            int k = 0;
             for (const auto& file : fs::directory_iterator(glob_folder_location + "/converted")) {
                 if (file.path().extension() == ".ascii") {
                     interface.print("Found ")
                              .print(file.path().filename())
                              .end_line();
-                    images.emplace(++k, file.path());
+                    images.emplace_back(file.path());
                 }
             }
+
+            sort(images.begin(), images.end());
 
             if (images.empty()) {
                 interface.print("No valid images have been found.")
@@ -84,7 +85,7 @@ Command load(map<int, string>& images) {
     };
 }
 
-Command positions(map<int, string>& images) {
+Command positions(vector<string>& images) {
     return Command{
         "Shows current positions of images in the animation.",
         [&images] (Interface& interface) {
@@ -95,10 +96,11 @@ Command positions(map<int, string>& images) {
                 return 2;
             }
 
+            int k = 0;
             for (const auto& image : images) {
-                interface.print(to_string(image.first))
+                interface.print(to_string(++k))
                          .print(": ")
-                         .print(fs::path(image.second).filename())
+                         .print(fs::path(image).filename())
                          .end_line();
             }
 
@@ -107,7 +109,7 @@ Command positions(map<int, string>& images) {
     };
 }
 
-Command swap(map<int, string>& images) {
+Command swap(vector<string>& images) {
     return Command{
         "Swaps images in the animation.",
         [&images] (Interface& interface) {
@@ -140,8 +142,8 @@ Command swap(map<int, string>& images) {
 
             }
 
-            string& img1 = images[num_1];
-            string& img2 = images[num_2];
+            string& img1 = images[num_1 - 1];
+            string& img2 = images[num_2 - 1];
             swap(img1, img2);
 
             return 1;
@@ -149,7 +151,7 @@ Command swap(map<int, string>& images) {
     };
 }
 
-Command show(const map<int, string>& images, const int& fps) {
+Command show(vector<string>& images, const int& fps) {
     return Command{
         "Show the animation.",
         [&images, &fps] (Interface& interface) {
@@ -164,7 +166,7 @@ Command show(const map<int, string>& images, const int& fps) {
 
             for (const auto& image : images) {
                 system("clear");
-                interface.read_file(image.second);
+                interface.read_file(image);
                 this_thread::sleep_for(chrono::milliseconds(milisec));
             }
 

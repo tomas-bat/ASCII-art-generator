@@ -39,7 +39,7 @@ $(BUILD_DIR)/%.o: src/%.cpp
 
 .PHONY: clean
 clean:
-	rm -rf $(TARGET) $(BUILD_DIR)/ $(SANITIZER_DIR)/ examples/converted/ sanitizer 2>/dev/null
+	rm -rf $(TARGET) $(BUILD_DIR)/ $(SANITIZER_DIR)/ examples/converted/ examples/animation/converted/ sanitizer 2>/dev/null
 
 # Debug:
 .PHONY: sanitize
@@ -71,23 +71,29 @@ endif
 # Dependencies:
 AnimatorController.o: src/AnimatorController.cpp \
   src/AnimatorController.hpp src/Controller.hpp src/Command.hpp \
-  src/Interface.hpp
+  src/Interface.hpp src/Global.hpp
 Application.o: src/Application.cpp src/Application.hpp src/Interface.hpp \
   src/StartController.hpp src/Controller.hpp src/Command.hpp
 Command.o: src/Command.cpp src/Command.hpp src/Interface.hpp
 Controller.o: src/Controller.cpp src/Controller.hpp src/Command.hpp \
   src/Interface.hpp
 ConverterController.o: src/ConverterController.cpp \
+  /usr/local/include/png.h /usr/local/include/pnglibconf.h \
+  /usr/local/include/pngconf.h /usr/local/include/jpeglib.h \
+  /usr/local/include/jconfig.h /usr/local/include/jmorecfg.h \
   src/Global.hpp src/ConverterController.hpp src/Controller.hpp \
   src/Command.hpp src/Interface.hpp src/Image.hpp src/ImageASCII.hpp \
   src/ImageRGB.hpp src/ImageJPG.hpp src/ImagePNG.hpp
 EditorController.o: src/EditorController.cpp src/EditorController.hpp \
-  src/Controller.hpp src/Command.hpp src/Interface.hpp
+  src/Controller.hpp src/Command.hpp src/Interface.hpp src/Global.hpp \
+  src/ImageASCII.hpp
 Image.o: src/Image.cpp src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp
 ImageASCII.o: src/ImageASCII.cpp src/ImageASCII.hpp
 ImageJPG.o: src/ImageJPG.cpp /usr/local/include/jpeglib.h \
+  /usr/local/include/jconfig.h /usr/local/include/jmorecfg.h \
   src/ImageJPG.hpp src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp
 ImagePNG.o: src/ImagePNG.cpp /usr/local/include/png.h \
+  /usr/local/include/pnglibconf.h /usr/local/include/pngconf.h \
   src/ImagePNG.hpp src/Image.hpp src/ImageASCII.hpp src/ImageRGB.hpp
 ImageRGB.o: src/ImageRGB.cpp src/ImageRGB.hpp src/ImageASCII.hpp
 Interface.o: src/Interface.cpp src/Interface.hpp
