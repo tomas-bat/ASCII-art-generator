@@ -21,7 +21,7 @@ BUILD_DIR = build
 SANITIZER_DIR = sanitize
 
 .PHONY: all
-all: compile
+all: compile doc
 
 .PHONY: compile
 compile: $(TARGET)
@@ -37,9 +37,12 @@ $(BUILD_DIR)/%.o: src/%.cpp
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXX_FLAGS) $< -c -o $@
 
+doc: src Doxyfile
+	doxygen
+
 .PHONY: clean
 clean:
-	rm -rf $(TARGET) $(BUILD_DIR)/ $(SANITIZER_DIR)/ examples/converted/ examples/animation/converted/ sanitizer 2>/dev/null
+	rm -rf $(TARGET) $(BUILD_DIR)/ $(SANITIZER_DIR)/ doc/ examples/converted/ examples/animation/converted/ sanitizer 2>/dev/null
 
 # Debug:
 .PHONY: sanitize
