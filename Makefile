@@ -37,7 +37,7 @@ $(BUILD_DIR)/%.o: src/%.cpp
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXX_FLAGS) $< -c -o $@
 
-doc: src Doxyfile
+doc: src Doxyfile README.md
 	doxygen
 
 .PHONY: clean

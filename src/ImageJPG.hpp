@@ -16,7 +16,7 @@ public:
     /**
      * Constructor of ImageJPG.
      *
-     * @param path  Path of the file.
+     * @param[in] path  Path of the file.
      */
     explicit ImageJPG(const std::string& path) { m_Path = path; }
 
@@ -30,20 +30,17 @@ public:
     /**
      * This method converts a JPG image into an universal RGB representation.
      *
-     * @param invert    This parameter is useless for JPEG, because JPEG doesn't support transparency.
-     * @return          The new RGB image.
+     * @param[in] invert    This parameter is useless for JPEG, because JPEG doesn't support transparency.
+     * @return              The new RGB image.
      *
-     * @note            Inspired by libjpeg documentation.
+     * @throws std::runtime_error if an error occurs during the process.
+     * @note                Inspired by libjpeg documentation.
      */
     ImageRGB extract(bool invert) const override;
 
     /**
-     * Destructor is defaulted for now.
+     * Destructor is default.
      */
     ~ImageJPG() override = default;
-
-    // todo
-private:
-    // todo
 };
 

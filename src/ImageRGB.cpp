@@ -49,11 +49,13 @@ ImageASCII ImageRGB::to_ascii(size_t max_width, bool invert, const string& trans
         out_height = m_Height;
     }
 
+    // Again, one pixel is represented by two characters, hence the 2 *:
     ImageASCII ascii(out_height, 2 * out_width);
 
     double height_pos = 0; // Height position in the original RGB image
     for (size_t i = 0; i < out_height; i++) {
         double width_pos = 0; // Width position in the original RGB image
+        // Again, one pixel is represented by two characters, hence the 2 *:
         for (size_t j = 0; j < 2 * out_width; j++) {
             // Floored positions:
             size_t w = width_pos, h = height_pos;

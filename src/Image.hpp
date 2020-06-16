@@ -36,7 +36,7 @@ public:
     /**
      * A virtual method which will be able to convert an image of a specific format into an universal RGB image.
      *
-     * @param invert            Specifies whether a fully transparent pixel is set to a white pixel or a black pixel.
+     * @param[in] invert        Specifies whether a fully transparent pixel is set to a white pixel or a black pixel.
      *                          False is made for white backgrounds, true is made for black backgrounds. This only
      *                          works with file formats that support transparency.
      * @return                  The new image in universal RGB representation (empty if the conversion fails).
@@ -56,9 +56,10 @@ public:
      * @return The image path.
      */
     std::string get_path() const { return m_Path; }
-    // todo
 protected:
+    /**
+     * Full path to the image.
+     */
     std::string m_Path;
-    // todo
 };
 

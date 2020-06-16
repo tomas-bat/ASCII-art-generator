@@ -22,8 +22,8 @@ public:
     /**
      * Constructor to initialize the input and output with the given streams.
      *
-     * @param in[in/out]    The input stream.
-     * @param out[in/out]   The output stream.
+     * @param in[in,out]    The input stream.
+     * @param out[in,out]   The output stream.
      */
     Interface(std::istream& in, std::ostream& out) : m_In(in), m_Out(out) {}
 
@@ -38,6 +38,7 @@ public:
      * This method tries to read a path from the input stream.
      *
      * @return The command given in by a user.
+     * @throws std::runtime_error if any error occurs.
      */
     std::string get_path(const std::string& str);
 
@@ -59,6 +60,7 @@ public:
      * This method will read an int number from the input stream.
      *
      * @return The input number.
+     * @throws std::invalid_argument if an error occurs.
      */
     int get_int();
 
@@ -66,6 +68,7 @@ public:
      * This method will read any string from the input stream.
      *
      * @return The input string;
+     * @throws std::runtime_error if an error occurs.
      */
     std::string get_string();
 
@@ -74,6 +77,8 @@ public:
      *
      * @param cmd_name[in]  Name of the command.
      * @param cmd_help[in]  Help for the command.
+     *
+     * @throws std::runtime_error if an error occurs.
      */
     void print_help(const std::string& cmd_name, const std::string& cmd_help) const;
 
@@ -81,21 +86,24 @@ public:
      * Puts end of line to m_Out.
      *
      * @return This interface.
+     * @throws std::runtime_error if an error occurs.
      */
     Interface& end_line();
 
     /**
      * Prints the whole file into the output stream.
      *
-     * @param path  Path to the file.
-     * @return      This interface.
+     * @param[in] path  Path to the file.
+     * @return          This interface.
+     * @throws std::runtime_error if an error occurs.
      */
     Interface& read_file(const std::string& path);
 
     /**
      * This method prints any given string into the output.
      *
-     * @param str[in]   The string we want to print out.
+     * @param[in] str   The string we want to print out.
+     * @throws std::runtime_error if an error occurs.
      */
     Interface& print(const std::string& str);
 
@@ -107,7 +115,14 @@ public:
     Interface& clear_line();
 
 private:
+    /**
+     * The input stream associated with the interface.
+     */
     std::istream& m_In;
+
+    /**
+     * The output stream associated with the interface.
+     */
     std::ostream& m_Out;
 };
 

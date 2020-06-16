@@ -19,7 +19,7 @@ public:
      * Constructor of ConverterController emplaces all commands of the controller into m_Commands and sets
      * the welcome message.
      *
-     * @param interface[in]     The interface that the controller works with.
+     * @param[in] interface    The interface that the controller works with.
      */
     explicit ConverterController(const Interface& interface);
 
@@ -33,15 +33,20 @@ public:
     */
     ConverterController& operator= (const ConverterController&) = delete;
 
-    /**
-     * Function to load all images into m_Images.
-     */
-    friend void load_images(std::vector<std::unique_ptr<Image>>& images, std::vector<std::string>& valid_images,
-                            Interface& interface);
-
 private:
+    /**
+     * This vector stores loaded images.
+     */
     std::vector<std::unique_ptr<Image>> m_Images;
+
+    /**
+     * This vector stores paths to images with valid extension.
+     */
     std::vector<std::string> m_Valid_images;
+
+    /**
+     * This number represents the maximum width of the converted ASCII image.
+     */
     size_t m_Max_width = 0;
 };
 

@@ -43,8 +43,19 @@ public:
     int run();
 
 protected:
+    /**
+     * A map that stores all commands of the controller.
+     */
     std::map<std::string, Command> m_Commands;
+
+    /**
+     * An interface associated with this controller. Usually given by the application.
+     */
     Interface m_Interface;
+
+    /**
+     * Welcome message of the controller.
+     */
     std::string m_Welcome = "[ You shouldn't be here. ]\n";
 };
 

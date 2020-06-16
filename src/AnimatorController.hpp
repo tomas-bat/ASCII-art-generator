@@ -18,7 +18,7 @@ public:
      * Constructor of AnimatorController emplaces all commands of the controller into m_Commands and sets
      * the welcome message.
      *
-     * @param interface[in]     The interface that the controller works with.
+     * @param[in] interface     The interface that the controller works with.
      */
     explicit AnimatorController(const Interface& interface);
 
@@ -33,7 +33,14 @@ public:
     AnimatorController& operator= (const AnimatorController&) = delete;
 
 private:
+    /**
+     * A vector that stores paths to the loaded images.
+     */
     std::vector<std::string> m_Images;
+
+    /**
+     * This number stores the framerate.
+     */
     int m_Fps = 30;
 };
 

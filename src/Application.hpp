@@ -39,6 +39,9 @@ public:
     int run() { return StartController(m_Interface).run(); }
 
 private:
+    /**
+     * The interface associated with this Application.
+     */
     Interface m_Interface;
 };
 

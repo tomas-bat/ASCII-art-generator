@@ -15,7 +15,7 @@ public:
      * Constructor of EditorController emplaces all commands of the controller into m_Commands and sets
      * the welcome message.
      *
-     * @param interface[in]     The interface that the controller works with.
+     * @param[in] interface     The interface that the controller works with.
      */
     explicit EditorController(const Interface& interface);
 
@@ -30,6 +30,9 @@ public:
     EditorController& operator= (const EditorController&) = delete;
 
 private:
+    /**
+     * Full path to the ASCII image.
+     */
     std::string m_File_location;
 };
 

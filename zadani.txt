@@ -65,7 +65,7 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 Aby mohl uživatel pracovat s tímto podprogramem, musí nejdříve alespoň 1 obrázek pomocí
 konverteru vytvořit. Poté uživatel může obrázky načíst a program řekne, které obrázky
 se mu podařilo načíst. Volitelně může uživatel nastavit počet snímku za sekundu při
-zobrazovaní animace (výchozí nastavení je 1 FPS), dále může volitelně prohazovat
+zobrazovaní animace (výchozí nastavení je 30 FPS), dále může volitelně prohazovat
 pořadí snímků. Pokud chce zjistit, který snímek ja na kterém místě, může si to nechat
 zobrazit. Poté si může nechat animaci zobrazit. Jakmile uživatel tento podprogram
 opustí, nastavení učiněná v tomto podprogramu se zapomenou.

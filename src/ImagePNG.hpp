@@ -14,7 +14,7 @@ public:
     /**
      * Constructor of ImagePNG.
      *
-     * @param path  Path of the image file.
+     * @param[in] path  Path of the image file.
      */
     explicit ImagePNG(const std::string& path) { m_Path = path; }
 
@@ -28,20 +28,17 @@ public:
     /**
      * This method converts a PNG image into an universal RGB image representation.
      *
-     * @param invert    This parameter sets whether fully transparent pixels will be set to black or white.
-     * @return          The new RGB image.
+     * @param[in] invert    This parameter sets whether fully transparent pixels will be set to black or white.
+     * @return              The new RGB image.
      *
-     * @note            Inspired by libpng documentation.
+     * @throws std::runtime_error if an error occurs during the process.
+     * @note                Inspired by libpng documentation.
      */
     ImageRGB extract(bool invert) const override;
 
     /**
-     * Destructor is defaulted for now.
+     * Destructor is default.
      */
     ~ImagePNG() override = default;
-
-    // todo
-private:
-    // todo
 };
 

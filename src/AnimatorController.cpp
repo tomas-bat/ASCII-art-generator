@@ -210,5 +210,6 @@ AnimatorController::AnimatorController(const Interface& interface) : Controller(
     m_Commands.emplace("swap", swap(m_Images));
     m_Commands.emplace("fps", fps(m_Fps));
 
+
     m_Welcome = "[ You're in the animator: ]\n";
 }

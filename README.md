@@ -43,6 +43,22 @@ Kde lze využít polymorfismus? (doporučené)
 ## Zadání programu ASCII-art generator
 #### Program uživatel spustí a pomocí příkazů do konzole ho bude ovládat.
 
+Obrazovka aplikace může vypadat například takto (dolar značí vstup uživatele):
+
+```
+Enter command:
+$ width 100
+Maximum ASCII image width will now be 100 characters.
+Enter command:
+$ load
+Found: example.jpeg
+Loaded 1 image(s) in total.
+Enter command:
+$ convert
+Converting example.jpeg...
+Converted to /lorem/ipsum/converted/example.jpeg.ascii
+```
+
 V hlavním menu aplikace uživatel může nastavit umístění složky, odkud se budou
 načítat obrázky. To je jediná nutná informace pro konverzi obrázků. Volitelně poté
 uživatel může specifikovat, zda chce vzhled ASCII obrázku přizpůsobit tmavému terminálu,
@@ -91,7 +107,7 @@ na bílou nebo černou podle toho, jak je nastavena inverze.
 Aby mohl uživatel pracovat s tímto podprogramem, musí nejdříve alespoň 1 obrázek pomocí
 konverteru vytvořit. Poté uživatel může obrázky načíst a program řekne, které obrázky
 se mu podařilo načíst. Volitelně může uživatel nastavit počet snímku za sekundu při
-zobrazovaní animace (výchozí nastavení je 1 FPS), dále může volitelně prohazovat
+zobrazovaní animace (výchozí nastavení je 30 FPS), dále může volitelně prohazovat
 pořadí snímků. Pokud chce zjistit, který snímek ja na kterém místě, může si to nechat
 zobrazit. Poté si může nechat animaci zobrazit. Jakmile uživatel tento podprogram
 opustí, nastavení učiněná v tomto podprogramu se zapomenou.
@@ -118,6 +134,7 @@ konkrétně má možnost obrázek zesvětlit, ztmavit a udělat negativ.
 - `darken` obrázek ztmaví
 - `negative` udělá z obrázku negativ
 - `back` se vrátí zpět do menu programu
+
 
 ### Kde mám polymorfismus?
 
