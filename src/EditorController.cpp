@@ -218,8 +218,6 @@ Command negative(const string& filename) {
     };
 }
 
-// todo: commands
-
 EditorController::EditorController(const Interface& interface) : Controller(interface) {
     m_Commands.emplace("back", back_editor());
     m_Commands.emplace("load", load(m_File_location));
