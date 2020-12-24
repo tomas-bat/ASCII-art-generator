@@ -1,6 +1,6 @@
 # Makefile inspired by tutorials from David Bernhauer and Ladislav Vagner (FIT CTU)
 
-TARGET = batekto2
+TARGET = generator
 CXX = g++
 CXX_FLAGS = -Wall -pedantic -Wextra -std=c++17
 SANITIZER_FLAG = -g -fsanitize=address
