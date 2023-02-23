@@ -2,7 +2,7 @@
 
 TARGET = generator
 CXX = g++
-CXX_FLAGS = -Wall -pedantic -Wextra -std=c++17
+CXX_FLAGS = -Wall -pedantic -Wextra -std=c++17 -I/opt/homebrew/include
 SANITIZER_FLAG = -g -fsanitize=address
 LD = g++
 
@@ -11,7 +11,7 @@ UNAME_S := $(shell uname -s)
 
 # Linker for macOS:
 ifeq ($(UNAME_S), Darwin)
-LD_FLAGS = -Wall -pedantic -Wextra -std=c++17 -lpng -ljpeg
+LD_FLAGS = -Wall -pedantic -Wextra -std=c++17 -lpng -ljpeg -L/opt/homebrew/lib
 # Linker for other (is meant for Linux):
 else
 LD_FLAGS = -Wall -pedantic -Wextra -std=c++17 -lpng -ljpeg -lstdc++fs
